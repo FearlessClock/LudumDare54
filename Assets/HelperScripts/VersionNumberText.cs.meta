@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 495b4f752a306dc4f92cf7d498f3db48
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - bundleVersionAndroid: {fileID: 11400000, guid: 4500253d42332de45b13d23565e84cf4, type: 2}
+  - bundleVersionIOS: {fileID: 11400000, guid: 0039665ca86fa2a4ba2df3f32982b528, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

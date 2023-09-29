@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f410f209af35d3d4581295df33fdc357
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - loadSceneEffectName: {fileID: 11400000, guid: f938e44bbeec3164f8dda3f0ea2f8a20, type: 2}
+  - newSceneToLoad: {fileID: 11400000, guid: 354dc8c53580233478f19026a6573212, type: 2}
+  - newSceneLoaded: {fileID: 11400000, guid: dc7d1a1ab80786b4389d09f88903e832, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
