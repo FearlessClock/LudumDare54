@@ -1,8 +1,6 @@
 fileFormatVersion: 2
-guid: 3c0efbcfb83443d498bbf0cb442daa9a
-labels:
-- MenuScene
-DefaultImporter:
+guid: 74d1455ba53ac3a479f0fcf8c53bf436
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 

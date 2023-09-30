@@ -22,34 +22,16 @@ public class CustomerMovementHandler : MonoBehaviour
     
     private bool isMoving = false;
     public Action OnArriveAtSpot = null;
-    public Action OnSeCasser = null;
+    public Action OnMovementFailed = null;
 
     AStarStuff.AStar aStarerer = new AStarStuff.AStar();
-
-    private bool isWaiting = false;
-    private float waitingTimer = 5;
-    [SerializeField] private float waitTime = 5;
-    [SerializeField] private int waitCycles = 2;
-    [SerializeField] private EventScriptable onFileComplaint = null;
     public void MoveToPoint(Vector2Int[] targets, Vector2 centerTarget)
     {
         bool res = false;
         path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
         if (!res)
         {
-            // TODO: Change this to happen in the brain
-            waitCycles--;
-            if (waitCycles > 0)
-            {
-                isWaiting = true;
-                waitingTimer = 5f;
-            }
-            else
-            {
-                onFileComplaint?.Call();
-                Debug.Log("i'm leaving : " + hasPath);
-            }
-
+            OnMovementFailed?.Invoke();
             Debug.Log("A customer did not find a path", this);
 
             return;

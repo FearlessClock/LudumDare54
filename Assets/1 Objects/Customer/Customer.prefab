@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 8353656839392649725}
   - component: {fileID: 4227002970854966633}
   - component: {fileID: 7654136567139344331}
+  - component: {fileID: 4261959289193389021}
   m_Layer: 0
   m_Name: Customer
   m_TagString: Untagged
@@ -133,6 +134,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementHandler: {fileID: 4227002970854966633}
   customerBuyItemHandler: {fileID: 7654136567139344331}
+  customerComplainHandler: {fileID: 4261959289193389021}
+  onFileComplaint: {fileID: 11400000, guid: 074759c794c9bc145b98261c5032c74a, type: 2}
 --- !u!114 &4227002970854966633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,9 +149,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDuration: 0.3
-  waitTime: 5
-  waitCycles: 2
-  onFileComplaint: {fileID: 11400000, guid: 074759c794c9bc145b98261c5032c74a, type: 2}
 --- !u!114 &7654136567139344331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +161,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cedd5244b9a69a4b9bd7a89ad410d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4261959289193389021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3219039732777834445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9cc55e1f5eb8cb4b8522f5af1d68304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complainPrefab: {fileID: 6410578324360024370, guid: 9e72b10e85c74354798a96fc9d5c91df, type: 3}
 --- !u!1 &3903076647183325936
 GameObject:
   m_ObjectHideFlags: 0
