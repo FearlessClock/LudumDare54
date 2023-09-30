@@ -89,8 +89,8 @@ namespace Grid
 
         public bool IsInsideGrid(Vector2 worldPosition)
         {
-            Vector2 bottomLeft = GetAtPos(0, 0).position - Vector2.one * CellSize / 2f;
-            Vector2 topRight = GetAtPos(width - 1, height - 1).position + Vector2.one * CellSize / 2f;
+            Vector2 bottomLeft = GetAtPos(0, 0).worldPosition - Vector2.one * CellSize / 2f;
+            Vector2 topRight = GetAtPos(width - 1, height - 1).worldPosition + Vector2.one * CellSize / 2f;
             return worldPosition.x >= bottomLeft.x
                 && worldPosition.y >= bottomLeft.y
                 && worldPosition.x <= topRight.x

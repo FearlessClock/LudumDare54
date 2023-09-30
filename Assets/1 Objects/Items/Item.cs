@@ -58,7 +58,7 @@ public class Item : Block
             return;
         }
 
-        Vector3 newPos = GridManager.Instance.GetAtWorldLocation(transform.position).position;
+        Vector3 newPos = GridManager.Instance.GetAtWorldLocation(transform.position).worldPosition;
         UpdateBlockCells(newPos);
         
         // Snap Position to Grid
