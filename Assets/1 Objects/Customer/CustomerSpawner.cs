@@ -7,7 +7,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerMovementHandler customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    [SerializeField] private Transform[] targets = null;
+    [SerializeField] private ItemAStarTargetPoints[] targets = null;
 
     private IEnumerator Start()
     {

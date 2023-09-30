@@ -21,11 +21,14 @@ namespace AStarStuff
             close = new List<Node>();
         }
 
-        public Vector2[] GetPathTo(Vector2Int start, Vector2Int end)
+        public Vector2[] GetPathTo(Vector2Int start, Vector2Int[] end, Vector2 centerPoint)
         {
-            if (start == end)
+            for (int i = 0; i < end.Length; i++)
             {
-                return new Vector2[0];
+                if (start == end[i])
+                {
+                    return new Vector2[0];
+                }
             }
 
             GenerateGrid();
@@ -46,7 +49,7 @@ namespace AStarStuff
                 currentNode = open[0];
                 open.RemoveAt(0);
                 close.Add(currentNode);
-                if (currentNode.position.x == end.x && currentNode.position.y == end.y)
+                if (IsAtOneOfPoints(end, currentNode.position))
                 {
                     return GeneratePathFrom(currentNode, start);
                 }
@@ -57,7 +60,7 @@ namespace AStarStuff
                 for (int i = 0; i < neighbors.Length; i++)
                 {
                     neighbors[i].g = currentNode.g + 1;
-                    neighbors[i].h = ManhattenDistance(neighbors[i].position, end);
+                    neighbors[i].h = ManhattenDistance(neighbors[i].position, centerPoint);
                     neighbors[i].f = neighbors[i].g + neighbors[i].h;
 
                     Node openNode = OpenContains(neighbors[i]);
@@ -79,6 +82,18 @@ namespace AStarStuff
             }
 
             return new Vector2[0];
+        }
+
+        private bool IsAtOneOfPoints(Vector2Int[] end, Vector2 currentPos)
+        {
+            for (int i = 0; i < end.Length; i++)
+            {
+                if (end[i] == currentPos)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private Vector2[] GeneratePathFrom(Node node, Vector2Int start)
@@ -121,7 +136,7 @@ namespace AStarStuff
             return null;
         }
 
-        private float ManhattenDistance(Vector2 position, Vector2Int end)
+        private float ManhattenDistance(Vector2 position, Vector2 end)
         {
             return Mathf.Abs(position.x - end.x) + Mathf.Abs(position.y - end.y);
         }
@@ -151,7 +166,7 @@ namespace AStarStuff
                 x = directions[i].x + Mathf.RoundToInt(currentNode.position.x);
                 y = directions[i].y + Mathf.RoundToInt(currentNode.position.y);
 
-                if(x >= 0 && x < grid.GetLength(1) && y >= 0 && y < grid.GetLength(0) && grid[y,x].isBlocked)
+                if(x > 0 && x < grid.GetLength(1) && y > 0 && y < grid.GetLength(0) && !grid[y,x].isBlocked)
                 {
                     nodes.Add(grid[y, x]);
                 }
