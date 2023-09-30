@@ -90,6 +90,16 @@ namespace Grid
             return allInfo.ToArray();
         }
 
+        public bool IsInsideGrid(Vector2 worldPosition)
+        {
+            Vector2 bottomLeft = GetAtPos(0, 0).position - Vector2.one * CellSize / 2f;
+            Vector2 topRight = GetAtPos(width - 1, height - 1).position + Vector2.one * CellSize / 2f;
+            return worldPosition.x >= bottomLeft.x
+                && worldPosition.y >= bottomLeft.y
+                && worldPosition.x <= topRight.x
+                && worldPosition.y <= topRight.y;
+        }
+
         public GridInformation GetAtWorldLocation(Vector3 position)
         {
             Vector2 localPos = position - this.transform.position;
