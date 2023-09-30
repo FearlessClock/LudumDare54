@@ -5,6 +5,7 @@ using HelperScripts.EventSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -77,8 +78,13 @@ public class CustomerMovementHandler : MonoBehaviour
             {
                 isWaiting = true;
                 waitingTimer = 5f;
-            }else
+            }
+            else
+            {
                 onFileComplaint?.Call();
+                GoToExit();
+                Debug.Log("i'm leaving : " + hasPath);
+            }
 
             Debug.Log("A customer did not find a path", this);
 
@@ -174,6 +180,14 @@ public class CustomerMovementHandler : MonoBehaviour
             path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index,
                                                 new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, out res);
         }
+        hasPath = res;
+    }
+
+    private void GoToExit()
+    {
+        bool res = false;
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index,
+                                               new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, out res);
         hasPath = res;
     }
 
