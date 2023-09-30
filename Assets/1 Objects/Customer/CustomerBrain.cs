@@ -25,7 +25,7 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 exitPosition;
     private Vector2 entrancePosition;
 
-    public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
+    public void Init(Item[] itemsToBuy, Vector2 exitPosition)
     {
         this.exitPosition = exitPosition;
         this.entrancePosition = this.transform.position;
