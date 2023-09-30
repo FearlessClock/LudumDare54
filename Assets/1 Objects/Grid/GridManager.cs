@@ -33,22 +33,27 @@ namespace Grid
             {
                 for (int x = 0; x < width; x++)
                 {
-                    grid[y, x] = new GridInformation(GridType.Empty, new Vector2(x,y) * size, Random.value > 0.5f); 
+                    grid[y, x] = new GridInformation(GridType.Empty, new Vector2(x,y) * size, false); 
                 }
             }
         }
 
-        private GridInformation GetAtPos(int x, int y)
+        public GridInformation GetAtPos(int x, int y)
         {
             return grid[y, x];
         }
 
-        private GridInformation GetAtPosTruncate(Vector2 pos)
+        public GridInformation GetAtPosTruncate(Vector2 pos)
         {
             return GetAtPos((int)pos.x, (int)pos.y);
         }
 
-        private GridInformation[] FindAllType(GridType type)
+        public GridInformation GetAtPosRound(Vector2 pos)
+        {
+            return GetAtPos(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
+        }
+
+        public GridInformation[] FindAllType(GridType type)
         {
             List<GridInformation> allInfo = new List<GridInformation>(); 
             for (int y = 0; y < height; y++)
@@ -64,7 +69,7 @@ namespace Grid
             return allInfo.ToArray();
         }
 
-        private GridInformation[] FindAllBlockedStatus(bool isBlocked)
+        public GridInformation[] FindAllBlockedStatus(bool isBlocked)
         {
             List<GridInformation> allInfo = new List<GridInformation>(); 
             for (int y = 0; y < height; y++)
@@ -78,6 +83,22 @@ namespace Grid
                 }
             }
             return allInfo.ToArray();
+        }
+
+        public GridInformation GetAtWorldLocation(Vector3 position)
+        {
+            Vector2 localPos = position - this.transform.position;
+            return GetAtPosRound(localPos);
+        }
+
+        public void SetBlockedState(Vector3 worldPos, bool isBlockedState)
+        {
+            GetAtWorldLocation(worldPos).isBlocked = isBlockedState;
+        }
+
+        public void SetGridType(Vector3 worldPos, GridType type)
+        {
+            GetAtWorldLocation(worldPos).type = type;
         }
 
         private void OnDrawGizmos()
