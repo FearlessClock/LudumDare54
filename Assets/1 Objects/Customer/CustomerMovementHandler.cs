@@ -44,9 +44,20 @@ public class CustomerMovementHandler : MonoBehaviour
         }
         this.exitPosition = exitPosition;
         Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
-        path = aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(this.transform.position).position), targets, taskList.Peek().transform.position);
-        
-        if (path.Length == 0)
+        bool res = false;
+        Debug.DrawLine(this.transform.position, exitPosition, Color.blue, 4);
+        Debug.DrawLine(this.transform.position, taskList.Peek().transform.position, Color.green, 4);
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Debug.DrawLine(this.transform.position, new Vector3(targets[i].x, targets[i].y), Color.gray, 4);
+        }
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
+        for (int i = 1; i < path.Length; i++)
+        {
+            Debug.DrawLine(path[i - 1], path[i], Color.yellow, 3);
+        }
+        if (!res)
         {
             // TODO: Complain flow
 
@@ -55,9 +66,16 @@ public class CustomerMovementHandler : MonoBehaviour
             return;
         }
 
-        targetPosition = path[1];
-        pathStep = 0;
-        hasPath = true;
+        if(path.Length > 0)
+        {
+            targetPosition = path[1];
+            pathStep = 0;
+            hasPath = true;
+        }
+        else
+        {
+            DoneMoving();
+        }
     }
 
     private Vector2Int[] GetTargetPoints(GridInformation[] gridInformations)
@@ -65,14 +83,14 @@ public class CustomerMovementHandler : MonoBehaviour
         Vector2Int[] targets = new Vector2Int[gridInformations.Length];
         for (int i = 0; i < gridInformations.Length; i++)
         {
-            targets[i] = new Vector2Int(Mathf.RoundToInt(gridInformations[i].position.x), Mathf.RoundToInt(gridInformations[i].position.y));
+            targets[i] = new Vector2Int((int)gridInformations[i].worldPosition.x, (int)gridInformations[i].worldPosition.y);
         }
         return targets;
     }
 
     private Vector2Int GetIntVector2(Vector2 vec)
     {
-        return new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.y));
+        return new Vector2Int((int)vec.x, (int)vec.y);
     }
 
     private void Update()
@@ -116,17 +134,18 @@ public class CustomerMovementHandler : MonoBehaviour
     private void GetNewPath()
     {
         taskList.Dequeue();
-        if(taskList.Count > 0)
+        bool res = false;
+        if (taskList.Count > 0)
         {
             Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
-            path = aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(this.transform.position).position), targets, taskList.Peek().transform.position);
+            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
         }
         else
         {
-            path = aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(this.transform.position).position),
-                                                new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition);
+            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index,
+                                                new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, out res);
         }
-        hasPath = true;
+        hasPath = res;
     }
 
     private void OnDrawGizmosSelected()

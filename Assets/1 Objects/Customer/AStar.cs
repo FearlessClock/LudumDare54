@@ -21,12 +21,14 @@ namespace AStarStuff
             close = new List<Node>();
         }
 
-        public Vector2[] GetPathTo(Vector2Int start, Vector2Int[] end, Vector2 centerPoint)
+        public Vector2[] GetPathTo(Vector2Int startIndex, Vector2Int[] endAccessibleTargetsWorld, Vector2 centerPointWorld, out bool res)
         {
-            for (int i = 0; i < end.Length; i++)
+            res = false;
+            for (int i = 0; i < endAccessibleTargetsWorld.Length; i++)
             {
-                if (start == end[i])
+                if (startIndex == GridManager.Instance.WorldToLocal(endAccessibleTargetsWorld[i]))
                 {
+                    res = true;
                     return new Vector2[0];
                 }
             }
@@ -36,7 +38,7 @@ namespace AStarStuff
             open.Clear();
             close.Clear();
 
-            open.Add(grid[start.y, start.x]);
+            open.Add(grid[startIndex.y, startIndex.x]);
 
             Node currentNode;
             int loopCounter = 10000;
@@ -49,9 +51,10 @@ namespace AStarStuff
                 currentNode = open[0];
                 open.RemoveAt(0);
                 close.Add(currentNode);
-                if (IsAtOneOfPoints(end, currentNode.position))
+                if (IsAtOneOfPoints(endAccessibleTargetsWorld, currentNode.position))
                 {
-                    return GeneratePathFrom(currentNode, start);
+                    res = true;
+                    return GeneratePathFrom(currentNode, startIndex);
                 }
 
 
@@ -60,7 +63,7 @@ namespace AStarStuff
                 for (int i = 0; i < neighbors.Length; i++)
                 {
                     neighbors[i].g = currentNode.g + 1;
-                    neighbors[i].h = ManhattenDistance(neighbors[i].position, centerPoint);
+                    neighbors[i].h = ManhattenDistance(neighbors[i].position, GridManager.Instance.WorldToLocal(centerPointWorld));
                     neighbors[i].f = neighbors[i].g + neighbors[i].h;
 
                     Node openNode = OpenContains(neighbors[i]);
@@ -81,6 +84,7 @@ namespace AStarStuff
                 }
             }
 
+            res = false;
             return new Vector2[0];
         }
 
@@ -88,7 +92,7 @@ namespace AStarStuff
         {
             for (int i = 0; i < end.Length; i++)
             {
-                if (end[i] == currentPos)
+                if (GridManager.Instance.WorldToLocal(end[i]) == currentPos)
                 {
                     return true;
                 }
@@ -99,13 +103,13 @@ namespace AStarStuff
         private Vector2[] GeneratePathFrom(Node node, Vector2Int start)
         {
             List<Vector2> path = new List<Vector2>();
-            path.Add(node.position);
+            path.Add(GridManager.Instance.GetAtPos((int)node.position.x, (int)node.position.y).worldPosition);
             int counter = 1000;
             while (node.position != start)
             {
                 counter--;
                 if (counter < 0) throw new Exception("Too big loop");
-                path.Add(node.parentPos);
+                path.Add(GridManager.Instance.GetAtPos((int)node.parentPos.x, (int)node.parentPos.y).worldPosition);
                 node = grid[(int)node.parentPos.y, (int)node.parentPos.x];
             }
             path.Reverse();
