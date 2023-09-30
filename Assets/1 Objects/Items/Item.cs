@@ -44,7 +44,9 @@ public class Item : Block
             return;
         }
 
-        lastPosition = transform.position;
+        Vector3 newPos = GridManager.Instance.GetAtWorldLocation(transform.position).position;
+        lastPosition = newPos;
+        transform.position = newPos;
     }
 
     private void ReturnToLastPosition() => transform.position = lastPosition;
