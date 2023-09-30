@@ -39,7 +39,7 @@ namespace Grid
             {
                 for (int x = 0; x < width; x++)
                 {
-                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset) * size, false); 
+                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset), false); 
                 }
             }
         }

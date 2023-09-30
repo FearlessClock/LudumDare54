@@ -1,6 +1,7 @@
 using Codice.Client.BaseCommands.Merge;
 using DG.Tweening;
 using Grid;
+using HelperScripts.EventSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +35,12 @@ public class CustomerMovementHandler : MonoBehaviour
 
     AStarStuff.AStar aStarerer = new AStarStuff.AStar();
 
+    private bool isWaiting = false;
+    private float waitingTimer = 5;
+    [SerializeField] private float waitTime = 5;
+    [SerializeField] private int waitCycles = 2;
+    [SerializeField] private EventScriptable onFileComplaint = null;
+
     public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
     {
         this.itemsToBuy = itemsToBuy;
@@ -43,12 +50,24 @@ public class CustomerMovementHandler : MonoBehaviour
             taskList.Enqueue(itemsToBuy[i]);
         }
         this.exitPosition = exitPosition;
+        FindPath();
+    }
+
+    public void FindPath()
+    {
         Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
         path = aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(this.transform.position).position), targets, taskList.Peek().transform.position);
-        
+
         if (path.Length == 0)
         {
             // TODO: Complain flow
+            waitCycles--;
+            if (waitCycles > 0)
+            {
+                isWaiting = true;
+                waitingTimer = 5f;
+            }else
+                onFileComplaint?.Call();
 
             Debug.Log("A customer did not find a path", this);
 
@@ -77,6 +96,16 @@ public class CustomerMovementHandler : MonoBehaviour
 
     private void Update()
     {
+        if(isWaiting)
+        {
+            waitingTimer -= Time.deltaTime;
+            if( waitingTimer <= 0)
+            {
+                isWaiting = false;
+                FindPath();
+            }
+        }
+
         if (!hasPath) return;
 
         if (!isMoving)

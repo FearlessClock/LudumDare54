@@ -1,3 +1,4 @@
+using HelperScripts.EventSystem;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,24 +7,24 @@ using UnityEngine;
 public class ReviewManager : MonoBehaviour
 {
     public static ReviewManager Instance;
-    private int lives = 5;
+    [SerializeField] private int lives = 5;
+    [SerializeField] private EventScriptable onFileComplaint = null;
 
     private void Awake()
     {
         Instance = this;
+        onFileComplaint.AddListener(SendReview);
     }
 
     [Button("review")]
-    public void SendReview(int reviewScore = 3)
+    public void SendReview()
     {
-        if(reviewScore < 3)
+        int i = Random.Range(0, 3);
+        lives--;
+        if (lives <= 0)
         {
-            lives--;
-            if(lives <= 0)
-            {
-                Debug.Log("lose");
-            }
+            Debug.Log("lose");
         }
-        PopUpManager.Instance.SpawnPopup(5);
+        PopUpManager.Instance.SpawnPopup(i);
     }
 }
