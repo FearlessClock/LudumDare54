@@ -1,9 +1,8 @@
 {
-    "name": "Customer",
+    "name": "Item",
     "rootNamespace": "",
     "references": [
-        "GUID:d03f8ecae5df608459adcf9df314f56b",
-        "GUID:5423d83bbd2df5347827f415225555c4"
+        "GUID:d03f8ecae5df608459adcf9df314f56b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

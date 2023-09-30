@@ -1,6 +1,7 @@
 using Codice.Client.BaseCommands.Merge;
 using DG.Tweening;
 using Grid;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class CustomerMovementHandler : MonoBehaviour
     //Checking grid
     // Move
 
-    private Transform[] itemsToBuy = null;
+    private ItemAStarTargetPoints[] itemsToBuy = null;
     private Vector2[] path = null;
     
     private Vector2 currentPosition;
@@ -25,7 +26,7 @@ public class CustomerMovementHandler : MonoBehaviour
     
     private bool isMoving = false;
 
-    public void Init(Transform[] itemsToBuy, Vector2 exitPosition)
+    public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
     {
         this.itemsToBuy = itemsToBuy;
 
@@ -33,15 +34,22 @@ public class CustomerMovementHandler : MonoBehaviour
 
         AStarStuff.AStar aStarerer = new AStarStuff.AStar();
         List<Vector2> bigPath = new List<Vector2>();
-        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(currentPosition).position),
-                                            GetIntVector2(GridManager.Instance.GetAtWorldLocation(itemsToBuy[0].position).position)));
+        Vector2Int[] targets = GetTargetPoints(itemsToBuy[0].GetSurroundingAccessPoints());
+        
+        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(currentPosition).position), targets, itemsToBuy[0].transform.position));
         for (int i = 0; i < itemsToBuy.Length-1; i++)
         {
-            bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(itemsToBuy[i].position).position),
-                                                GetIntVector2(GridManager.Instance.GetAtWorldLocation(itemsToBuy[i+1].position).position)));
+            targets = GetTargetPoints(itemsToBuy[i+1].GetSurroundingAccessPoints());
+            bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
+                                                targets, itemsToBuy[i + 1].transform.position));
         }
-        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(itemsToBuy[^1].position).position),
-                                            GetIntVector2(GridManager.Instance.GetAtWorldLocation(exitPosition).position)));
+        targets = GetTargetPoints(itemsToBuy[^1].GetSurroundingAccessPoints());
+        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
+                                            targets, itemsToBuy[^1].transform.position));
+
+        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
+                                            new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition));
+
         path = bigPath.ToArray();
         if (path.Length == 0)
         {
@@ -55,6 +63,16 @@ public class CustomerMovementHandler : MonoBehaviour
         targetPosition = path[1];
         pathStep = 0;
         hasPath = true;
+    }
+
+    private Vector2Int[] GetTargetPoints(GridInformation[] gridInformations)
+    {
+        Vector2Int[] targets = new Vector2Int[gridInformations.Length];
+        for (int i = 0; i < gridInformations.Length; i++)
+        {
+            targets[i] = new Vector2Int(Mathf.RoundToInt(gridInformations[i].position.x), Mathf.RoundToInt(gridInformations[i].position.y));
+        }
+        return targets;
     }
 
     private Vector2Int GetIntVector2(Vector2 vec)
