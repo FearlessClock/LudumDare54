@@ -25,16 +25,16 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 exitPosition;
     private Vector2 entrancePosition;
 
-    private GridInformation[] accessPoints = new GridInformation[0];
+    private Vector2[] accessPoints;
 
-    public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
+    public void Init(Item[] itemsToBuy, Vector2 exitPosition)
     {
-        accessPoints = itemsToBuy[1].GetSurroundingAccessPoints();
+        accessPoints = itemsToBuy[1].GetLayoutPositions();
         this.exitPosition = exitPosition;
         this.entrancePosition = this.transform.position;
         for (int i = 0; i < itemsToBuy.Length; i++)
         {
-            actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetSurroundingAccessPoints()), itemsToBuy[i].transform.position, movementHandler));
+            actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetLayoutPositions()), itemsToBuy[i].transform.position, movementHandler));
             actions.Enqueue(new BuyAction(itemsToBuy[i], customerBuyItemHandler));
         }
         actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
@@ -51,10 +51,10 @@ public class CustomerBrain : MonoBehaviour
         if (!hasRetried)
         {
             actions.Enqueue(new ComplainAction(customerComplainHandler));
-            ItemAStarTargetPoints[] items = customerBuyItemHandler.GetRemainingItems;
+            Item[] items = customerBuyItemHandler.GetRemainingItems;
             for (int i = 0; i < items.Length; i++)
             {
-                actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetSurroundingAccessPoints()), items[i].transform.position, movementHandler));
+                actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetLayoutPositions()), items[i].transform.position, movementHandler));
                 actions.Enqueue(new BuyAction(items[i], customerBuyItemHandler));
             }
             actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
@@ -93,12 +93,12 @@ public class CustomerBrain : MonoBehaviour
         }
     }
 
-    private Vector2Int[] GetTargetPoints(GridInformation[] gridInformations)
+    private Vector2Int[] GetTargetPoints(Vector2[] gridPositions)
     {
-        Vector2Int[] targets = new Vector2Int[gridInformations.Length];
-        for (int i = 0; i < gridInformations.Length; i++)
+        Vector2Int[] targets = new Vector2Int[gridPositions.Length];
+        for (int i = 0; i < gridPositions.Length; i++)
         {
-            targets[i] = new Vector2Int((int)gridInformations[i].worldPosition.x, (int)gridInformations[i].worldPosition.y);
+            targets[i] = new Vector2Int((int)gridPositions[i].x, (int)gridPositions[i].y);
         }
         return targets;
     }
@@ -107,7 +107,7 @@ public class CustomerBrain : MonoBehaviour
     {
         for (int i = 0; i < accessPoints.Length; i++)
         {
-            Gizmos.DrawWireSphere(accessPoints[i].worldPosition, 0.5f);
+            Gizmos.DrawWireSphere(accessPoints[i], 0.5f);
         }
     }
 }
@@ -169,12 +169,12 @@ public class WalkAction : CustomerAction
 
 public class BuyAction : CustomerAction
 {
-    private ItemAStarTargetPoints itemToBuy = null;
+    private Item itemToBuy = null;
     private CustomerBuyItemHandler customerBuyItemHandler = null;
 
     private Action failedAction = null;
 
-    public BuyAction(ItemAStarTargetPoints itemAStarTargetPoints, CustomerBuyItemHandler customerBuyItemHandler)
+    public BuyAction(Item itemAStarTargetPoints, CustomerBuyItemHandler customerBuyItemHandler)
     {
         this.itemToBuy = itemAStarTargetPoints;
         this.customerBuyItemHandler = customerBuyItemHandler;

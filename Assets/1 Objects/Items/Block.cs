@@ -57,6 +57,8 @@ public class Block : MonoBehaviour
         OnRelease?.Invoke();
     }
 
+    public Vector2[] GetLayoutPositions() => blockLayoutOffset.ToArray();
+
     public void MoveTo(Vector2 pos)
     {
         transform.position = pos;

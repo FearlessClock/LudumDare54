@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class CustomerBuyItemHandler : MonoBehaviour
 {
-    private ItemAStarTargetPoints[] itemsToBuy = null;
+    private Item[] itemsToBuy = null;
     private int step = 0;
 
-    public ItemAStarTargetPoints[] GetRemainingItems
+    public Item[] GetRemainingItems
     {
         get
         {
-            List<ItemAStarTargetPoints> items = new List<ItemAStarTargetPoints>();
+            List<Item> items = new List<Item>();
             for (int i = step; i < itemsToBuy.Length; i++)
             {
                 items.Add(itemsToBuy[i]);
@@ -21,18 +21,18 @@ public class CustomerBuyItemHandler : MonoBehaviour
         }
     }
 
-    public void ClaimItem(ItemAStarTargetPoints target)
+    public void ClaimItem(Item target)
     {
         step++;
         target.gameObject.SetActive(false);
     }
 
-    public ItemAStarTargetPoints GetItemNotBought()
+    public Item GetItemNotBought()
     {
         return itemsToBuy[step];
     }
 
-    public void Init(ItemAStarTargetPoints[] itemsToBuy)
+    public void Init(Item[] itemsToBuy)
     {
         this.itemsToBuy = itemsToBuy;
     }

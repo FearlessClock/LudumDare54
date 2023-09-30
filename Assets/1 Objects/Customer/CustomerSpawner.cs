@@ -9,7 +9,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerBrain customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    [SerializeField] private List<ItemAStarTargetPoints> targets = new List<ItemAStarTargetPoints>();
+    [SerializeField] private List<Item> targets = new List<Item>();
    
 
     public IEnumerator Spawn(int itemToTake)
@@ -22,7 +22,7 @@ public class CustomerSpawner : MonoBehaviour
         {
             if (itemToTake > targets.Count) itemToTake = targets.Count;
 
-            ItemAStarTargetPoints[] _targets = new ItemAStarTargetPoints[itemToTake];
+            Item[] _targets = new Item[itemToTake];
 
             for (int i = 0; i < _targets.Length; i++)
             {
