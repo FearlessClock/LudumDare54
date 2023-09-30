@@ -15,6 +15,7 @@ namespace Grid
         [SerializeField] private int height = 0;
 
         [SerializeField] private int size = 1;
+        public int CellSize { get => size; }
 
         private void Awake()
         {

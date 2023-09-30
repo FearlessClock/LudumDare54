@@ -1,3 +1,4 @@
+using Grid;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,7 +71,13 @@ public class Block : MonoBehaviour
 
         botLeft.x = Mathf.Abs(botLeft.x);
         botLeft.y = Mathf.Abs(botLeft.y);
-        BlockLayoutSize = botLeft + topRight + Vector2.one; // * cellSize
+        BlockLayoutSize = botLeft + topRight + Vector2.one;
+
+        if (GridManager.Instance == null)
+            return;
+        
+        BlockPivotOffset *= GridManager.Instance.CellSize;
+        BlockLayoutSize *= GridManager.Instance.CellSize;
     }
 
     private void OnDestroy()
