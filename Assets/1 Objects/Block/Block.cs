@@ -21,7 +21,16 @@ public class Block : MonoBehaviour
 
     [SerializeField] private bool pickable = true;
 
-    protected List<Vector2Int> blockLayoutOffset;
+    protected List<Vector2> blockLayoutOffset;
+
+    /// <summary>
+    /// Distance from pivot to Lowest corner position
+    /// </summary>
+    protected Vector3 BottomLeftBound;
+    /// <summary>
+    /// Distance from pivot to Greatest corner position
+    /// </summary>
+    protected Vector3 TopRightBound;
 
     public Vector2 BlockLayoutSize { get; private set; }
     public Vector2 BlockPivotOffset { get; private set; }
@@ -67,17 +76,25 @@ public class Block : MonoBehaviour
             if (offset.y > topRight.y) topRight.y = offset.y;
         }
 
+        // Set Bounds and Pivot
+        BottomLeftBound = botLeft;
+        TopRightBound = topRight;
         BlockPivotOffset = (botLeft + topRight) / 2f;
 
+        // Absolute the negative values to compute the full size
         botLeft.x = Mathf.Abs(botLeft.x);
         botLeft.y = Mathf.Abs(botLeft.y);
         BlockLayoutSize = botLeft + topRight + Vector2.one;
 
         if (GridManager.Instance == null)
             return;
-        
-        BlockPivotOffset *= GridManager.Instance.CellSize;
-        BlockLayoutSize *= GridManager.Instance.CellSize;
+
+        // Take into account the size of a grid cell
+        int cellSize = GridManager.Instance.CellSize;
+        BottomLeftBound *= cellSize;
+        TopRightBound *= cellSize;
+        BlockPivotOffset *= cellSize;
+        BlockLayoutSize *= cellSize;
     }
 
     private void OnDestroy()
@@ -85,5 +102,16 @@ public class Block : MonoBehaviour
         OnClick.RemoveAllListeners();
         OnDrag.RemoveAllListeners();
         OnRelease.RemoveAllListeners();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        float size = GridManager.Instance.CellSize;
+        Gizmos.color = Color.cyan;
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+            Gizmos.DrawWireCube(blockLayoutOffset[i] * size + (Vector2)transform.position, Vector2.one * (size - .2f));
     }
 }

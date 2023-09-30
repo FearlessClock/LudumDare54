@@ -1,5 +1,5 @@
+using Grid;
 using Sirenix.OdinInspector;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,9 +10,14 @@ public class Item : Block
     [SerializeField, Required] private SpriteRenderer spriteRenderer;
     [SerializeField, Required] private BoxCollider2D itemCollider;
 
+    private Vector3 lastPosition;
+
     protected override void Start()
     {
         name = data.Label;
+
+        if (!data.ShapeLayout.Contains(Vector3.zero))
+            data.ShapeLayout.Add(Vector3.zero);
         blockLayoutOffset = data.ShapeLayout;
 
         base.Start();
@@ -22,10 +27,64 @@ public class Item : Block
 
         itemCollider.offset = BlockPivotOffset;
         itemCollider.size = BlockLayoutSize;
+
+        lastPosition = transform.position;
+
+        OnRelease.AddListener(MouseDropItem);
     }
 
-    void Update()
+    private void MouseDropItem()
     {
+        // Check if Corner Bounds are Inside the Grid
+        // better than checking block's every cells
+        bool inside = GridManager.Instance.IsInsideGrid(transform.position + BottomLeftBound)
+            && GridManager.Instance.IsInsideGrid(transform.position + TopRightBound);
+
+        if(!inside)
+        {
+            ReturnToLastPosition();
+            return;
+        }
+
+        int cellSize = GridManager.Instance.CellSize;
         
+        // Check if any targeted Cell is already Blocked
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            if (!GridManager.Instance.GetAtWorldLocation((Vector3)blockLayoutOffset[i] * cellSize + transform.position).isBlocked)
+                continue;
+
+            ReturnToLastPosition();
+            return;
+        }
+
+        Vector3 newPos = GridManager.Instance.GetAtWorldLocation(transform.position).worldPosition;
+        UpdateBlockCells(newPos);
+        
+        // Snap Position to Grid
+        lastPosition = newPos;
+        transform.position = newPos;
+    }
+
+    private void ReturnToLastPosition() => transform.position = lastPosition;
+
+    private void UpdateBlockCells(Vector3 newPos)
+    {
+        int cellSize = GridManager.Instance.CellSize;
+        Vector3 offset;
+
+        // Empty All old positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+        }
+
+        // Update New positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
+        }
     }
 }
