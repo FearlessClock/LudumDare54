@@ -8,5 +8,5 @@ public struct Item_Data
     public string Label;
     public string Description;
     public Sprite Sprite;
-    public List<Vector2Int> ShapeLayout;
+    public List<Vector2> ShapeLayout;
 }

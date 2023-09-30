@@ -1,6 +1,5 @@
 using Grid;
 using Sirenix.OdinInspector;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +15,9 @@ public class Item : Block
     protected override void Start()
     {
         name = data.Label;
+
+        if (!data.ShapeLayout.Contains(Vector3.zero))
+            data.ShapeLayout.Add(Vector3.zero);
         blockLayoutOffset = data.ShapeLayout;
 
         base.Start();
@@ -44,10 +46,45 @@ public class Item : Block
             return;
         }
 
+        int cellSize = GridManager.Instance.CellSize;
+        
+        // Check if any targeted Cell is already Blocked
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            if (!GridManager.Instance.GetAtWorldLocation((Vector3)blockLayoutOffset[i] * cellSize + transform.position).isBlocked)
+                continue;
+
+            ReturnToLastPosition();
+            return;
+        }
+
         Vector3 newPos = GridManager.Instance.GetAtWorldLocation(transform.position).position;
+        UpdateBlockCells(newPos);
+        
+        // Snap Position to Grid
         lastPosition = newPos;
         transform.position = newPos;
     }
 
     private void ReturnToLastPosition() => transform.position = lastPosition;
+
+    private void UpdateBlockCells(Vector3 newPos)
+    {
+        int cellSize = GridManager.Instance.CellSize;
+        Vector3 offset;
+
+        // Empty All old positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+        }
+
+        // Update New positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
+        }
+    }
 }

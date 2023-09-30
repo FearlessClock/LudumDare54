@@ -1,7 +1,6 @@
 using Grid;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,7 +21,7 @@ public class Block : MonoBehaviour
 
     [SerializeField] private bool pickable = true;
 
-    protected List<Vector2Int> blockLayoutOffset;
+    protected List<Vector2> blockLayoutOffset;
 
     /// <summary>
     /// Distance from pivot to Lowest corner position
@@ -110,13 +109,9 @@ public class Block : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position + BottomLeftBound, transform.position + TopRightBound);
-
-        float size = GridManager.Instance.CellSize - .2f;
+        float size = GridManager.Instance.CellSize;
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(transform.position, Vector2.one * size);
         for (int i = 0; i < blockLayoutOffset.Count; ++i)
-            Gizmos.DrawWireCube(blockLayoutOffset[i] + (Vector2)transform.position, Vector2.one * size);
+            Gizmos.DrawWireCube(blockLayoutOffset[i] * size + (Vector2)transform.position, Vector2.one * (size - .2f));
     }
 }

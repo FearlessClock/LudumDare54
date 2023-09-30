@@ -112,9 +112,17 @@ namespace Grid
             GetAtWorldLocation(worldPos).isBlocked = isBlockedState;
         }
 
-        public void SetGridType(Vector3 worldPos, GridType type)
+        public void UpdateGridAtWorldPosition(Vector3 worldPos, GridType type)
         {
-            GetAtWorldLocation(worldPos).type = type;
+            var cellInfo = GetAtWorldLocation(worldPos);
+            cellInfo.type = type;
+            cellInfo.isBlocked = type switch
+            {
+                GridType.Empty => false,
+                GridType.Item => true,
+                GridType.Character => false,
+                _ => false
+            };
         }
 
         private void OnDrawGizmos()
@@ -146,5 +154,7 @@ namespace Grid
             this.position = pos;
             this.isBlocked = isBlocked;
         }
+
+
     }
 }
