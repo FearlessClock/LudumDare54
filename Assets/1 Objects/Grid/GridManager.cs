@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Grid
         [SerializeField] private float size = 1;
         public float CellSize { get => size; }
         private Vector3 offset;
+        public Action OnGridUpdated = null;
 
         private void Awake()
         {
@@ -43,6 +45,7 @@ namespace Grid
                     grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset), new Vector2Int(x,y), false); 
                 }
             }
+            OnGridUpdated?.Invoke();
         }
 
         public GridInformation GetAtPos(int x, int y)
@@ -116,6 +119,7 @@ namespace Grid
         public void SetBlockedState(Vector3 worldPos, bool isBlockedState)
         {
             GetAtWorldLocation(worldPos).isBlocked = isBlockedState;
+            OnGridUpdated?.Invoke();
         }
 
         public void UpdateGridAtWorldPosition(Vector3 worldPos, GridType type)
@@ -129,6 +133,7 @@ namespace Grid
                 GridType.Character => false,
                 _ => false
             };
+            OnGridUpdated?.Invoke();
         }
 
         private void OnDrawGizmos()

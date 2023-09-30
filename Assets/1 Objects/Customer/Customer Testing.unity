@@ -5377,6 +5377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1773893469}
   - component: {fileID: 1773893470}
+  - component: {fileID: 1773893471}
   m_Layer: 0
   m_Name: Customer Spawner
   m_TagString: Untagged
@@ -5417,6 +5418,21 @@ MonoBehaviour:
   targets:
   - {fileID: 1625608605}
   - {fileID: 1117988986}
+--- !u!114 &1773893471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1773893468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c601bfe7d959db428a5f928c8947c65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeBtwSpawn: 5555
+  maxNumberOfItem: 2
+  cs: {fileID: 1773893470}
 --- !u!1 &1812318961
 GameObject:
   m_ObjectHideFlags: 0

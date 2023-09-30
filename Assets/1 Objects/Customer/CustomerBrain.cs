@@ -25,11 +25,8 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 exitPosition;
     private Vector2 entrancePosition;
 
-    private GridInformation[] accessPoints = new GridInformation[0];
-
     public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
     {
-        accessPoints = itemsToBuy[1].GetSurroundingAccessPoints();
         this.exitPosition = exitPosition;
         this.entrancePosition = this.transform.position;
         for (int i = 0; i < itemsToBuy.Length; i++)
@@ -63,7 +60,7 @@ public class CustomerBrain : MonoBehaviour
         else
         {
             actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
-            actions.Enqueue(new FileComplaintAction(onFileComplaint));
+            actions.Enqueue(new FileComplaintAction(onFileComplaint, customerBuyItemHandler));
             hasRetried = true;
         }
         if (actionRoutine != null)
@@ -103,13 +100,6 @@ public class CustomerBrain : MonoBehaviour
         return targets;
     }
 
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < accessPoints.Length; i++)
-        {
-            Gizmos.DrawWireSphere(accessPoints[i].worldPosition, 0.5f);
-        }
-    }
 }
 public enum ActionType{ Walk, Buy}
 public interface CustomerAction
@@ -227,12 +217,13 @@ public class ComplainAction : CustomerAction
 public class FileComplaintAction : CustomerAction
 {
     private EventScriptable onFileComplaint = null;
-
+    private CustomerBuyItemHandler customerBuyItemHandler = null;
     private Action failedAction = null;
 
-    public FileComplaintAction(EventScriptable onFileComplaint)
+    public FileComplaintAction(EventScriptable onFileComplaint, CustomerBuyItemHandler customerBuyItemHandler)
     {
         this.onFileComplaint = onFileComplaint;
+        this.customerBuyItemHandler = customerBuyItemHandler;
     }
 
     public ActionType Type => ActionType.Buy;
@@ -245,6 +236,7 @@ public class FileComplaintAction : CustomerAction
 
     public IEnumerator DoAction()
     {
+        customerBuyItemHandler.ReturnItems();
         onFileComplaint.Call();
 
         yield return null;
