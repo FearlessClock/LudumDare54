@@ -1,7 +1,7 @@
-using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PopUpManager : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class PopUpManager : MonoBehaviour
         {
             PopUp popup = popupQueue.Dequeue();
             popup.instance = Instantiate(popupPrefab, spawnParent);
-            popup.instance.Init(reviewInfo.allReview[Random.Range(0, reviewInfo.allReview.Count)]);
+            popup.instance.Init(popup.review);
             popupShowing.Add(popup);
         }
         if(popupShowing.Count > 0)
@@ -38,11 +38,12 @@ public class PopUpManager : MonoBehaviour
         }
     }
 
-    [Button("spawnpopup")]
-    public void SpawnPopup()
+    public void SpawnPopup(int reviewScore = 5)
     {
         PopUp popup = new PopUp() ;
         popup.timer = popupShowTime;
+        var reviews = reviewInfo.allReview.FindAll(x => x.stars == reviewScore).ToList();
+        popup.review = reviews[Random.Range(0, reviews.Count)];
         popupQueue.Enqueue(popup);
     }
 
@@ -63,6 +64,7 @@ public class PopUpManager : MonoBehaviour
 
 public class PopUp
 {
+    public Review review;
     public ReviewPopupHandler instance;
     public float timer;
 }

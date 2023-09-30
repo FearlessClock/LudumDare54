@@ -15,10 +15,10 @@ MonoBehaviour:
   allReview:
   - title: great!
     description: Found a nice thing there
-    stars: 4.14
+    stars: 4
   - title: is okay
     description: too much
-    stars: 2.6
+    stars: 1
   - title: Love cat
     description: Great cat
     stars: 5

@@ -14,5 +14,5 @@ public class Review
 {
     public string title;
     public string description;
-    [Range(0, 5)] public float stars;
+    [Range(0, 5)] public int stars;
 }

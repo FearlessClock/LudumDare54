@@ -14,6 +14,6 @@ public class ReviewPopupHandler : MonoBehaviour
     {
         title.text = review.title;
         description.text = review.description;
-        stars.fillAmount = review.stars / 5;
+        stars.fillAmount = review.stars / 5f;
     }
 }
