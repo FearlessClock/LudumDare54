@@ -18,6 +18,7 @@ namespace Grid
 
         [SerializeField] private int size = 1;
         public int CellSize { get => size; }
+        private Vector3 offset;
 
         private void Awake()
         {
@@ -32,13 +33,13 @@ namespace Grid
             }
 
             grid = new GridInformation[height, width];
-            float offsetWidth = transform.position.x - size * width /2;
-            float offsetHeight = transform.position.y - size * height / 2;
+            offset.x = transform.position.x - size * width /2;
+            offset.y = transform.position.y - size * height / 2;
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    grid[y, x] = new GridInformation(GridType.Empty,new Vector3(x +offsetWidth,y +offsetHeight)* size, false); 
+                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset) * size, false); 
                 }
             }
         }
@@ -92,7 +93,7 @@ namespace Grid
 
         public GridInformation GetAtWorldLocation(Vector3 position)
         {
-            Vector2 localPos = position - this.transform.position;
+            Vector2 localPos = position - this.transform.position - offset;
             return GetAtPosRound(localPos);
         }
 

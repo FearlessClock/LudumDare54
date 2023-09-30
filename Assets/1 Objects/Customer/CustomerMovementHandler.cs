@@ -131,8 +131,9 @@ public class CustomerMovementHandler : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (path.Length == 0) return;
+        return;
         if (!Application.isPlaying) return;
+        if (path.Length == 0) return;
 
         for (int i = 1; i < path.Length; i++)
         {

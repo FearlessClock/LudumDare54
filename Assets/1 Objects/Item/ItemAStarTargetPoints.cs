@@ -15,7 +15,7 @@ public class ItemAStarTargetPoints : MonoBehaviour
             Vector2 pos = (Vector2)this.transform.position + surroundingDirections[i];
             if(pos.x >= 0 && pos.y >= 0 && pos.x < GridManager.Instance.GetGrid.GetLength(1) && pos.y < GridManager.Instance.GetGrid.GetLength(0))
             {
-                surroundingPoints.Add(GridManager.Instance.GetAtPosRound((Vector2)this.transform.position + surroundingDirections[i]));
+                surroundingPoints.Add(GridManager.Instance.GetAtWorldLocation((Vector2)this.transform.position + surroundingDirections[i]));
             }
         }
         return surroundingPoints.ToArray();
