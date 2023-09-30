@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,11 +32,13 @@ namespace Grid
             }
 
             grid = new GridInformation[height, width];
+            float offsetWidth = transform.position.x - size * width /2;
+            float offsetHeight = transform.position.y - size * height / 2;
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    grid[y, x] = new GridInformation(GridType.Empty, new Vector2(x,y) * size, false); 
+                    grid[y, x] = new GridInformation(GridType.Empty,new Vector3(x +offsetWidth,y +offsetHeight)* size, false); 
                 }
             }
         }
