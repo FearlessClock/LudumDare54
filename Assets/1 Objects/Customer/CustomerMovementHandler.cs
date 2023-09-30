@@ -102,6 +102,7 @@ public class CustomerMovementHandler : MonoBehaviour
         else
         {
             hasPath = false;
+            Debug.Log("end");
         }
     }
 
