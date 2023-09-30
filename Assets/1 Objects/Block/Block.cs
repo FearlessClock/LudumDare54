@@ -90,7 +90,7 @@ public class Block : MonoBehaviour
             return;
 
         // Take into account the size of a grid cell
-        int cellSize = GridManager.Instance.CellSize;
+        float cellSize = GridManager.Instance.CellSize;
         BottomLeftBound *= cellSize;
         TopRightBound *= cellSize;
         BlockPivotOffset *= cellSize;

@@ -9,7 +9,6 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerBrain customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    //[SerializeField] private ItemAStarTargetPoints[] targets = null;
     [SerializeField] private List<ItemAStarTargetPoints> targets = new List<ItemAStarTargetPoints>();
    
 
