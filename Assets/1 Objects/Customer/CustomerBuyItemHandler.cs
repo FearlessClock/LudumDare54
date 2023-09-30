@@ -36,4 +36,12 @@ public class CustomerBuyItemHandler : MonoBehaviour
     {
         this.itemsToBuy = itemsToBuy;
     }
+
+    public void ReturnItems()
+    {
+        for (int i = 0;i < itemsToBuy.Length; i++)
+        {
+            itemsToBuy[i].gameObject.SetActive(true);
+        }
+    }
 }

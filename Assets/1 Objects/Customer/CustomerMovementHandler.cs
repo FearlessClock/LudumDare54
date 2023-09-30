@@ -25,7 +25,44 @@ public class CustomerMovementHandler : MonoBehaviour
     public Action OnMovementFailed = null;
 
     AStarStuff.AStar aStarerer = new AStarStuff.AStar();
+
+    private Vector2Int[] targets = null;
+    private Vector2 centerTarget;
     public void MoveToPoint(Vector2Int[] targets, Vector2 centerTarget)
+    {
+        this.targets = targets;
+        this.centerTarget = centerTarget;
+
+        bool res = false;
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
+        if (!res)
+        {
+            OnMovementFailed?.Invoke();
+            Debug.Log("A customer did not find a path", this);
+
+            return;
+        }
+
+        GridManager.Instance.OnGridUpdated += OnGridUpdate;
+
+        if(path.Length > 0)
+        {
+            targetPosition = path[1];
+            pathStep = 0;
+            hasPath = true;
+        }
+        else
+        {
+            DoneMoving();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GridManager.Instance.OnGridUpdated -= OnGridUpdate;
+    }
+
+    private void OnGridUpdate()
     {
         bool res = false;
         path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
@@ -37,7 +74,7 @@ public class CustomerMovementHandler : MonoBehaviour
             return;
         }
 
-        if(path.Length > 0)
+        if (path.Length > 0)
         {
             targetPosition = path[1];
             pathStep = 0;
