@@ -5,16 +5,9 @@ using UnityEngine;
 
 public class CustomerBuyItemHandler : MonoBehaviour
 {
-    private CustomerMovementHandler movementHandler = null;
 
-    private void Awake()
+    public void ClaimItem(ItemAStarTargetPoints target)
     {
-        movementHandler = GetComponent<CustomerMovementHandler>();
-        movementHandler.OnArriveAtSpot += OnArrive;
-    }
-
-    private void OnArrive()
-    {
-
+        target.gameObject.SetActive(false);
     }
 }

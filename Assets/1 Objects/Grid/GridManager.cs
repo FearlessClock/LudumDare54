@@ -17,8 +17,8 @@ namespace Grid
         [SerializeField] private int width = 0; 
         [SerializeField] private int height = 0;
 
-        [SerializeField] private int size = 1;
-        public int CellSize { get => size; }
+        [SerializeField] private float size = 1;
+        public float CellSize { get => size; }
         private Vector3 offset;
 
         private void Awake()
@@ -89,7 +89,7 @@ namespace Grid
 
         public GridInformation GetAtWorldLocation(Vector3 position)
         {
-            Vector2 localPos = position - this.transform.position - offset;
+            Vector2 localPos = position - this.transform.position - offset + size/2 * Vector3.one;
             return GetAtPosTruncate(localPos);
         }
 
@@ -123,6 +123,18 @@ namespace Grid
                     {
                         Gizmos.color = GetAtPos(x,y).isBlocked? Color.red : Color.green;
                         Gizmos.DrawWireCube(GetAtPos(x, y).worldPosition, Vector3.one * (size - 0.1f));
+                    }
+                }
+            }
+            else
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        Vector2 offset = new Vector2(x + transform.position.x - size * width / 2, y+transform.position.y - size * height / 2);
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawWireCube(offset, Vector3.one * (size - 0.1f));
                     }
                 }
             }
