@@ -10,6 +10,7 @@ namespace Grid
         public static GridManager Instance = null;
 
         private GridInformation[,] grid = null;
+        public GridInformation[,] GetGrid => grid;
 
         [SerializeField] private int width = 0; 
         [SerializeField] private int height = 0;
