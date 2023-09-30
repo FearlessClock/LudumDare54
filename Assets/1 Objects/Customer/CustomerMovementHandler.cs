@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CustomerMovementHandler : MonoBehaviour
 {
@@ -16,42 +17,47 @@ public class CustomerMovementHandler : MonoBehaviour
     private ItemAStarTargetPoints[] itemsToBuy = null;
     private Vector2[] path = null;
     
-    private Vector2 currentPosition;
     private Vector2 targetPosition;
+    private Vector2 exitPosition;
     private int pathStep = 0;
+    private int currentStepInTaskList = 0;
+    private Queue<ItemAStarTargetPoints> taskList = new Queue<ItemAStarTargetPoints>();
 
     private bool hasPath = false;
 
     [SerializeField] private float moveDuration = 0.05f;
     
+    private bool hasSeCasser = false;
     private bool isMoving = false;
+    public Action OnArriveAtSpot = null;
+    public Action OnSeCasser = null;
+
+    AStarStuff.AStar aStarerer = new AStarStuff.AStar();
 
     public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
     {
         this.itemsToBuy = itemsToBuy;
 
-        currentPosition = transform.position;
-
-        AStarStuff.AStar aStarerer = new AStarStuff.AStar();
-        List<Vector2> bigPath = new List<Vector2>();
-        Vector2Int[] targets = GetTargetPoints(itemsToBuy[0].GetSurroundingAccessPoints());
-        
-        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(currentPosition).position), targets, itemsToBuy[0].transform.position));
-        for (int i = 0; i < itemsToBuy.Length-1; i++)
+        for (int i = 0; i < itemsToBuy.Length; i++)
         {
-            targets = GetTargetPoints(itemsToBuy[i+1].GetSurroundingAccessPoints());
-            bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
-                                                targets, itemsToBuy[i + 1].transform.position));
+            taskList.Enqueue(itemsToBuy[i]);
         }
-        targets = GetTargetPoints(itemsToBuy[^1].GetSurroundingAccessPoints());
-        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
-                                            targets, itemsToBuy[^1].transform.position));
+        this.exitPosition = exitPosition;
+        Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
+        bool res = false;
+        Debug.DrawLine(this.transform.position, exitPosition, Color.blue, 4);
+        Debug.DrawLine(this.transform.position, taskList.Peek().transform.position, Color.green, 4);
 
-        bigPath.AddRange(aStarerer.GetPathTo(GetIntVector2(GridManager.Instance.GetAtWorldLocation(bigPath[^1]).position),
-                                            new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition));
-
-        path = bigPath.ToArray();
-        if (path.Length == 0)
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Debug.DrawLine(this.transform.position, new Vector3(targets[i].x, targets[i].y), Color.gray, 4);
+        }
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
+        for (int i = 1; i < path.Length; i++)
+        {
+            Debug.DrawLine(path[i - 1], path[i], Color.yellow, 3);
+        }
+        if (!res)
         {
             // TODO: Complain flow
 
@@ -60,9 +66,16 @@ public class CustomerMovementHandler : MonoBehaviour
             return;
         }
 
-        targetPosition = path[1];
-        pathStep = 0;
-        hasPath = true;
+        if(path.Length > 0)
+        {
+            targetPosition = path[1];
+            pathStep = 0;
+            hasPath = true;
+        }
+        else
+        {
+            DoneMoving();
+        }
     }
 
     private Vector2Int[] GetTargetPoints(GridInformation[] gridInformations)
@@ -70,14 +83,14 @@ public class CustomerMovementHandler : MonoBehaviour
         Vector2Int[] targets = new Vector2Int[gridInformations.Length];
         for (int i = 0; i < gridInformations.Length; i++)
         {
-            targets[i] = new Vector2Int(Mathf.RoundToInt(gridInformations[i].position.x), Mathf.RoundToInt(gridInformations[i].position.y));
+            targets[i] = new Vector2Int((int)gridInformations[i].worldPosition.x, (int)gridInformations[i].worldPosition.y);
         }
         return targets;
     }
 
     private Vector2Int GetIntVector2(Vector2 vec)
     {
-        return new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.y));
+        return new Vector2Int((int)vec.x, (int)vec.y);
     }
 
     private void Update()
@@ -101,14 +114,45 @@ public class CustomerMovementHandler : MonoBehaviour
         }
         else
         {
+            pathStep = 0;
             hasPath = false;
+            if(taskList.Count == 0)
+            {
+                if (!hasSeCasser)
+                {
+                    hasSeCasser = true;
+                    OnSeCasser?.Invoke();
+                }
+                return;
+            }
+            GetNewPath();
+
+            OnArriveAtSpot.Invoke();
         }
+    }
+
+    private void GetNewPath()
+    {
+        taskList.Dequeue();
+        bool res = false;
+        if (taskList.Count > 0)
+        {
+            Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
+            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
+        }
+        else
+        {
+            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index,
+                                                new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, out res);
+        }
+        hasPath = res;
     }
 
     private void OnDrawGizmosSelected()
     {
+        return;
+        if (!Application.isPlaying) return;
         if (path.Length == 0) return;
-        if (Application.isPlaying) return;
 
         for (int i = 1; i < path.Length; i++)
         {
