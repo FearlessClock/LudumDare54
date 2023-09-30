@@ -9,7 +9,8 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerMovementHandler customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    [SerializeField] private ItemAStarTargetPoints[] targets = null;
+    //[SerializeField] private ItemAStarTargetPoints[] targets = null;
+    [SerializeField] private List<ItemAStarTargetPoints> targets = new List<ItemAStarTargetPoints>();
     
 
     /*private IEnumerator Start()
@@ -27,20 +28,27 @@ public class CustomerSpawner : MonoBehaviour
 
         CustomerMovementHandler customer = Instantiate<CustomerMovementHandler>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
 
-        ItemAStarTargetPoints[] _targets = new ItemAStarTargetPoints[itemToTake];
-
-        for (int i = 0; i < _targets.Length; i++)
+        if (targets.Count > 0)
         {
-            var item = targets[UnityEngine.Random.Range(1, targets.Length)];
+            if (itemToTake > targets.Count) itemToTake = targets.Count;
 
-            while(_targets.Contains(item))
+            ItemAStarTargetPoints[] _targets = new ItemAStarTargetPoints[itemToTake];
+
+            for (int i = 0; i < _targets.Length; i++)
             {
-                item = targets[UnityEngine.Random.Range(1, targets.Length)];
+                var item = targets[UnityEngine.Random.Range(0, targets.Count)];
+
+                while (_targets.Contains(item))
+                {
+                    item = targets[UnityEngine.Random.Range(0, targets.Count)];
+                }
+
+                _targets[i] = item;
+                targets.Remove(item);
+
             }
 
-            _targets[i] = item;
+            customer.Init(_targets, exitPoint.position);
         }
-
-        customer.Init(_targets, exitPoint.position);
     }
 }
