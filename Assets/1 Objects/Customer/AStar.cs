@@ -166,7 +166,7 @@ namespace AStarStuff
                 x = directions[i].x + Mathf.RoundToInt(currentNode.position.x);
                 y = directions[i].y + Mathf.RoundToInt(currentNode.position.y);
 
-                if(x > 0 && x < grid.GetLength(1) && y > 0 && y < grid.GetLength(0) && !grid[y,x].isBlocked)
+                if(x >= 0 && x < grid.GetLength(1) && y >= 0 && y < grid.GetLength(0) && !grid[y,x].isBlocked)
                 {
                     nodes.Add(grid[y, x]);
                 }
