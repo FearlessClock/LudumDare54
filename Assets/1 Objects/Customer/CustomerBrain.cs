@@ -215,10 +215,10 @@ public class ComplainAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-        Debug.Log("Do complain action");
+        //Debug.Log("Do complain action");
         customerComplainHandler.Complain();
         yield return new WaitForSeconds(waitTime);
-        Debug.Log("Complaining done");
+        //Debug.Log("Complaining done");
 
         yield return null;
     }
