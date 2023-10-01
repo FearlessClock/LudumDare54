@@ -102,7 +102,7 @@ namespace Grid
 
         public GridInformation GetAtWorldLocation(Vector3 position)
         {
-            Vector2 localPos = position - this.transform.position - offset + size/2 * Vector3.one;
+            Vector2 localPos = position + this.transform.position - offset + size/2 * Vector3.one;
             return GetAtPosTruncate(localPos);
         }
 
