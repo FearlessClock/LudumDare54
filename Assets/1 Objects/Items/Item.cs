@@ -37,7 +37,7 @@ public class Item : Block
 
         OnRelease.AddListener(MouseDropItem);
 
-        if (isAlreadySpawn) MouseDropItem();
+        //if (isAlreadySpawn) MouseDropItem();
     }
 
     public Vector2[] GetAdjacentLayoutPositions()
