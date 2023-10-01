@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Grid.GridInformation;
+using Random = UnityEngine.Random;
 
 namespace Grid
 {
@@ -21,9 +22,10 @@ namespace Grid
         [SerializeField] private int height = 0;
 
         [SerializeField] private float size = 1;
-        public float CellSize { get => size; }
         private Vector3 offset;
         public Action OnGridUpdated = null;
+
+        public float CellSize { get => size; }
 
         private void Awake()
         {
@@ -109,6 +111,11 @@ namespace Grid
         {
             Vector2 localPos = position - this.transform.position - offset + size / 2f * Vector3.one;
             return GetAtPosTruncate(localPos);
+        }
+
+        public Vector2 GetRandomCellPosition()
+        {
+            return GetAtPos(Random.Range(2, width - 1), Random.Range(2, height - 1)).worldPosition;
         }
 
         public Vector2 WorldToLocal(Vector3 worldPosition)

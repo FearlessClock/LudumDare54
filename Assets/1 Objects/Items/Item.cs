@@ -2,6 +2,7 @@ using Grid;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Item : Block
 {
@@ -104,6 +105,8 @@ public class Item : Block
         lastPosition = newPos;
         transform.position = newPos;
 
+        Shipment.Instance.AddToAvailableTargets(this);
+
         if (!wasPlacedOnce) wasPlacedOnce = true;
     }
 
@@ -120,5 +123,7 @@ public class Item : Block
             offset = blockLayoutOffset[i] * cellSize;
             GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
         }
+
+        Destroy(gameObject);
     }
 }
