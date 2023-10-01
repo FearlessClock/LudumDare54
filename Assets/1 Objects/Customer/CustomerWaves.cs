@@ -14,7 +14,7 @@ public class CustomerWaves : MonoBehaviour
 
     private void Awake()
     {
-        //currentTimeBtwSpawn = timeBtwSpawn;
+        currentTimeBtwSpawn = 3;
     }
     private void Update()
     {

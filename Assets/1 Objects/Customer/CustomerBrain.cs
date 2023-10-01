@@ -32,9 +32,12 @@ public class CustomerBrain : MonoBehaviour
     {
         this.exitPosition = exitPosition;
         this.entrancePosition = this.transform.position;
+        actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y +1) }, entrancePosition, movementHandler));
+        actions.Enqueue(new WaitAction(1));
+
         for (int i = 0; i < itemsToBuy.Length; i++)
         {
-            actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetLayoutPositions()), itemsToBuy[i].transform.position, movementHandler));
+            actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetAdjacentLayoutPositions()), itemsToBuy[i].transform.position, movementHandler));
             actions.Enqueue(new BuyAction(itemsToBuy[i], customerBuyItemHandler));
         }
         actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
@@ -51,11 +54,13 @@ public class CustomerBrain : MonoBehaviour
         if (!hasRetried)
         {
             actions.Enqueue(new ComplainAction(customerComplainHandler));
+            actions.Enqueue(new WaitAction(2));
             Item[] items = customerBuyItemHandler.GetRemainingItems;
             for (int i = 0; i < items.Length; i++)
             {
                 actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetAdjacentLayoutPositions()), items[i].transform.position, movementHandler));
                 actions.Enqueue(new BuyAction(items[i], customerBuyItemHandler));
+                actions.Enqueue(new WaitAction(2));
             }
             actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
             hasRetried = true;
@@ -110,7 +115,7 @@ public class CustomerBrain : MonoBehaviour
     }
 
 }
-public enum ActionType{ Walk, Buy}
+public enum ActionType{ Walk, Buy, Wait}
 public interface CustomerAction
 {
     ActionType Type { get; }
@@ -164,6 +169,31 @@ public class WalkAction : CustomerAction
     {
         hasFinishedMoving = true;
     }
+}
+
+public class WaitAction : CustomerAction
+{
+    private float waitTime = 1;
+    private Action failedAction = null;
+
+    public WaitAction(float waitTime)
+    {
+        this.waitTime = waitTime;
+    }
+
+    public ActionType Type => ActionType.Wait;
+
+    public Action OnActionFailed
+    {
+        get { return failedAction; }
+        set { failedAction += value; }
+    }
+
+    public IEnumerator DoAction()
+    {
+        yield return new WaitForSeconds(waitTime);
+    }
+
 }
 
 public class BuyAction : CustomerAction
