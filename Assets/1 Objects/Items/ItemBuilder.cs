@@ -1,4 +1,4 @@
-using System.Collections;
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,5 +36,15 @@ public class ItemBuilder : MonoBehaviour
             list[i].gameObject.SetActive(false);
         }
         return list;
+    }
+
+    [Button]
+    private void SpawnAllItems()
+    {
+        var items = GetAllItems();
+        foreach (var item in items)
+        {
+            item.gameObject.SetActive(true);
+        }
     }
 }
