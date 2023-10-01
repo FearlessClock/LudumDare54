@@ -28,12 +28,17 @@ public class EndScreen : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.W)) CallEndScreen(true);
-        else CallEndScreen(false);
+        if (Input.GetKeyDown(KeyCode.W)) CallEndScreen(true);
+        else if (Input.GetKeyDown(KeyCode.L)) CallEndScreen(false);
     }
 
     public void Menu()
     {
-        //SceneManager.LoadScene();
+        SceneManager.LoadScene(0);
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(1);
     }
 }
