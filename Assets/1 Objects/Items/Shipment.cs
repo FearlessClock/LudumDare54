@@ -59,16 +59,13 @@ public class Shipment : MonoBehaviour
         {
             var item = allTargets[Random.Range(0, allTargets.Count)];
 
-            while (targets.Contains(item))
-            {
-                item = allTargets[UnityEngine.Random.Range(0, allTargets.Count)];
-            }
             targets.Add(item);
 
             var spawnPos = new Vector3(UnityEngine.Random.Range(-startSpawnOffset, startSpawnOffset) + UnityEngine.Random.Range(-startSpawnOffset, startSpawnOffset), 0);
             item.MoveTo(spawnPos);
             item.gameObject.SetActive(true);
             item.MouseDropItem();
+            
         }
     }
 

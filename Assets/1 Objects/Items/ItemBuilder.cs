@@ -33,7 +33,7 @@ public class ItemBuilder : MonoBehaviour
             list.Add(CreateItem());
             list[i].SetData(database.GetItemData(i));
             list[i].Init();
-            list[i].gameObject.SetActive(false);
+            list[i].gameObject.SetActive(true);
         }
         return list;
     }
