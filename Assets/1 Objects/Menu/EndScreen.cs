@@ -7,9 +7,24 @@ using UnityEngine.SceneManagement;
 
 public class EndScreen : MonoBehaviour
 {
+    static EndScreen instance;
+    public static EndScreen Instance { get => instance; }
+
     [SerializeField] GameObject screen;
     [SerializeField] TextMeshProUGUI titleText;
     [SerializeField] TextMeshProUGUI dataText;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
+
     public void CallEndScreen(bool isWin)
     {
         screen.SetActive(true);
