@@ -43,7 +43,8 @@ public class CustomerBuyItemHandler : MonoBehaviour
     {
         for (int i = 0;i < itemsToBuy.Length; i++)
         {
-            itemsToBuy[i].gameObject.SetActive(true);
+            Shipment.Instance.RecovObject(itemsToBuy[i]);
+            //itemsToBuy[i].gameObject.SetActive(true);
         }
     }
 }

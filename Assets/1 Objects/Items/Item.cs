@@ -74,7 +74,7 @@ public class Item : Block
         }
     }
 
-    private void MouseDropItem()
+    public void MouseDropItem()
     {
         // Check if Corner Bounds are Inside the Grid
         // better than checking block's every cells
