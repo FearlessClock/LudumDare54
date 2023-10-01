@@ -9,7 +9,7 @@ public class ReviewManager : MonoBehaviour
     public static ReviewManager Instance;
     [SerializeField] private int lives = 5;
     [SerializeField] private EventScriptable onFileComplaint = null;
-
+    bool hasLost = false;
     private void Awake()
     {
         Instance = this;
@@ -19,11 +19,15 @@ public class ReviewManager : MonoBehaviour
     [Button("review")]
     public void SendReview()
     {
+        if (hasLost)
+            return;
+
         int i = Random.Range(0, 3);
         lives--;
         if (lives <= 0)
         {
             Debug.Log("lose");
+            hasLost = true;
         }
         PopUpManager.Instance.SpawnPopup(i);
     }

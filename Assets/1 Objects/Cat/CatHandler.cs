@@ -58,11 +58,9 @@ public class CatHandler : Block
             timer -= Time.deltaTime;
             if(timer <= 0)
             {
-                int i = catIndex;
-                do
-                {
+                int i = UnityEngine.Random.Range(0, catLayouts.Length);
+                if(i == catIndex)
                     i = UnityEngine.Random.Range(0, catLayouts.Length);
-                } while (i == catIndex);
 
                 catIndex = i;
                 UpdateCatLayout();
