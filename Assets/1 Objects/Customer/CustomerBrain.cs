@@ -152,9 +152,9 @@ public class WalkAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-        movement.MoveToPoint(targetPoints, center);
         movement.OnArriveAtSpot += OnDoneMoving;
         movement.OnMovementFailed += OnMovementFailed;
+        movement.MoveToPoint(targetPoints, center);
         while (!hasFinishedMoving)
         {
             yield return new WaitForSeconds(0.7f);
