@@ -12,8 +12,7 @@ public class Item : Block
     [SerializeField, Required] private BoxCollider2D itemCollider;
     [SerializeField] private bool isAlreadySpawn;
 
-    private Vector3 lastPosition;
-    private bool wasPlacedOnce;
+
     private List<Vector2> adjacentBlockLayoutOffset = new List<Vector2>();
 
     public override void Init()
@@ -110,29 +109,6 @@ public class Item : Block
     }
 
     private void ReturnToLastPosition() => transform.position = lastPosition;
-
-    private void UpdateBlockCells(Vector3 newPos)
-    {
-        float cellSize = GridManager.Instance.CellSize;
-        Vector3 offset;
-
-        if (wasPlacedOnce) // Only if Item was Blocking Grid cells
-        {
-            // Empty All old positions
-            for (int i = 0; i < blockLayoutOffset.Count; ++i)
-            {
-                offset = blockLayoutOffset[i] * cellSize;
-                GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
-            }
-        }
-
-        // Update New positions
-        for (int i = 0; i < blockLayoutOffset.Count; ++i)
-        {
-            offset = blockLayoutOffset[i] * cellSize;
-            GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
-        }
-    }
 
     public void ItemBought()
     {
