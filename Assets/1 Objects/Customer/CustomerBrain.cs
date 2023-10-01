@@ -1,9 +1,7 @@
-using Grid;
 using HelperScripts.EventSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class CustomerBrain : MonoBehaviour

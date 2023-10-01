@@ -1,7 +1,6 @@
 using Grid;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Item : Block
@@ -36,7 +35,7 @@ public class Item : Block
 
         OnRelease.AddListener(MouseDropItem);
 
-        if (isAlreadySpawn) MouseDropItem();
+        //if (isAlreadySpawn) MouseDropItem();
     }
 
     public Vector2[] GetAdjacentLayoutPositions()

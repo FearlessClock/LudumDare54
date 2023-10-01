@@ -1,6 +1,9 @@
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using Sirenix.OdinInspector;
+#endif
 
 public class ItemBuilder : MonoBehaviour
 {
@@ -38,6 +41,7 @@ public class ItemBuilder : MonoBehaviour
         return list;
     }
 
+#if UNITY_EDITOR
     [Button]
     private void SpawnAllItems()
     {
@@ -47,4 +51,5 @@ public class ItemBuilder : MonoBehaviour
             item.gameObject.SetActive(true);
         }
     }
+#endif
 }
