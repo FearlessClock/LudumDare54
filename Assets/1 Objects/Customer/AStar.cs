@@ -21,7 +21,7 @@ namespace AStarStuff
             close = new List<Node>();
         }
 
-        public Vector2[] GetPathTo(Vector2Int startIndex, Vector2Int[] endAccessibleTargetsWorld, Vector2 centerPointWorld, out bool res)
+        public Vector2[] GetPathTo(Vector2Int startIndex, Vector2[] endAccessibleTargetsWorld, Vector2 centerPointWorld, out bool res)
         {
             res = false;
             for (int i = 0; i < endAccessibleTargetsWorld.Length; i++)
@@ -88,7 +88,7 @@ namespace AStarStuff
             return new Vector2[0];
         }
 
-        private bool IsAtOneOfPoints(Vector2Int[] end, Vector2 currentPos)
+        private bool IsAtOneOfPoints(Vector2[] end, Vector2 currentPos)
         {
             for (int i = 0; i < end.Length; i++)
             {

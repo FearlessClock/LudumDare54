@@ -18,7 +18,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private float shipmentOffset;
     [SerializeField] private int numberOfItemsAtStart;
     /*[SerializeField] */private List<Item> allTargets = new List<Item>();
-    /*[SerializeField] */private List<Item> targets = new List<Item>();
+    [SerializeField] private List<Item> targets = new List<Item>();
 
     private void Start()
     {

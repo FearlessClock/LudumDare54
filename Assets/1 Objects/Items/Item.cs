@@ -14,6 +14,7 @@ public class Item : Block
 
     private Vector3 lastPosition;
     private bool wasPlacedOnce;
+    private List<Vector2> adjacentBlockLayoutOffset = new List<Vector2>();
 
     public override void Init()
     {
@@ -24,6 +25,7 @@ public class Item : Block
         blockLayoutOffset = data.ShapeLayout;
 
         base.Init();
+        ComputeAdjacentBlocks();
 
         spriteRenderer.sprite = data.Sprite;
         spriteRenderer.transform.localPosition = BlockPivotOffset;
@@ -38,9 +40,39 @@ public class Item : Block
         if (isAlreadySpawn) MouseDropItem();
     }
 
+    public Vector2[] GetAdjacentLayoutPositions()
+    {
+        Vector2 currentPos = transform.position;
+        var positions = adjacentBlockLayoutOffset.ToArray();
+        for (int i = 0; i < positions.Length; ++i)
+            positions[i] += currentPos;
+
+        return positions;
+    }
+
     public void SetData(ItemData data) => this.data = data;
 
     public void ForceGridPlacement() => MouseDropItem();
+    
+    private void ComputeAdjacentBlocks()
+    {
+        void AddToAdjacentBlock(Vector2 pos)
+        {
+            if (blockLayoutOffset.Contains(pos) || adjacentBlockLayoutOffset.Contains(pos))
+                return;
+            adjacentBlockLayoutOffset.Add(pos);
+        }
+
+        Vector2 currentOffset;
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            currentOffset = blockLayoutOffset[i];
+            AddToAdjacentBlock(currentOffset + Vector2.up);
+            AddToAdjacentBlock(currentOffset + Vector2.down);
+            AddToAdjacentBlock(currentOffset + Vector2.left);
+            AddToAdjacentBlock(currentOffset + Vector2.right);
+        }
+    }
 
     private void MouseDropItem()
     {
