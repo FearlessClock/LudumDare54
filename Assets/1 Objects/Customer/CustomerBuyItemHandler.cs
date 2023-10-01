@@ -1,3 +1,4 @@
+using HelperScripts.EventSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class CustomerBuyItemHandler : MonoBehaviour
 {
     private Item[] itemsToBuy = null;
     private int step = 0;
-
+    [SerializeField] private EventObjectScriptable onGainScore;
     public Item[] GetRemainingItems
     {
         get
@@ -25,7 +26,7 @@ public class CustomerBuyItemHandler : MonoBehaviour
         step++;
         target.ItemBought();
         target.gameObject.SetActive(false);
-
+        onGainScore.Call(1);
     }
 
     public Item GetItemNotBought()

@@ -154,6 +154,7 @@ MonoBehaviour:
   customerBuyItemHandler: {fileID: 7654136567139344331}
   customerComplainHandler: {fileID: 4261959289193389021}
   onFileComplaint: {fileID: 11400000, guid: 074759c794c9bc145b98261c5032c74a, type: 2}
+  canLeave: 0
 --- !u!114 &4227002970854966633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cedd5244b9a69a4b9bd7a89ad410d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onGainScore: {fileID: 11400000, guid: c499ff41f40b14a499c2d5c3cb0c3c0e, type: 2}
 --- !u!114 &4261959289193389021
 MonoBehaviour:
   m_ObjectHideFlags: 0
