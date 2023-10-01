@@ -40,6 +40,9 @@ public class Item : Block
 
     public void SetData(ItemData data) => this.data = data;
 
+    public void ForceGridPlacement() => MouseDropItem();
+
+    private void MouseDropItem()
     public void MouseDropItem()
     {
         // Check if Corner Bounds are Inside the Grid
