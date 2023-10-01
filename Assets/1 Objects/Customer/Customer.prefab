@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3258224539930989286}
   - component: {fileID: 7749212595741100485}
+  - component: {fileID: 7646523864604481363}
   m_Layer: 0
   m_Name: Isometric Diamond
   m_TagString: Untagged
@@ -26,9 +27,9 @@ Transform:
   m_GameObject: {fileID: 2621174267065495037}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.030802643}
+  m_LocalPosition: {x: 0.053, y: 0.489, z: 0.030802643}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1009702235010289137}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -73,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3625043607559282579, guid: 19fb86013d8c24d6cb8410c0aadf30fa, type: 3}
-  m_Color: {r: 0.66788507, g: 0.8679245, b: 0.24973297, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 758950a9d8175c4418625c437b3b04c5, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -84,6 +85,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7646523864604481363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2621174267065495037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1a3913163f9364fa13539e8296ce80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerSprites:
+  - {fileID: 21300000, guid: d2938704d4c46dd42a9b3d4eb41fb97f, type: 3}
+  - {fileID: 21300000, guid: 8c14afaa735dd94428c31f61ca8ae7e9, type: 3}
+  - {fileID: 21300000, guid: 867458ded6e0feb4cbb718b0945a03bf, type: 3}
+  - {fileID: 21300000, guid: 758950a9d8175c4418625c437b3b04c5, type: 3}
 --- !u!1 &3219039732777834445
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eed2bebca0392e4ca314bdf89f4b15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDuration: 0.1
+  moveDuration: 0.75
 --- !u!114 &7654136567139344331
 MonoBehaviour:
   m_ObjectHideFlags: 0

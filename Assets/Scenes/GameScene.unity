@@ -1892,7 +1892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c601bfe7d959db428a5f928c8947c65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBtwSpawn: 5
+  timeBtwSpawn: 20
   maxNumberOfItem: 3
   cs: {fileID: 1773893470}
 --- !u!4 &467909887
@@ -7159,7 +7159,7 @@ MonoBehaviour:
   customerPrefab: {fileID: 8353656839392649725, guid: 42fd1ad24fda8d6449c96d835821a8a2, type: 3}
   entrancePoint: {fileID: 847256036}
   exitPoint: {fileID: 1155871492}
-  shipmentLocation: {fileID: 0}
+  shipmentLocation: {fileID: 1776341089}
 --- !u!1 &1776341087
 GameObject:
   m_ObjectHideFlags: 0
@@ -7190,7 +7190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfItemsAtStart: 3
-  startSpawnOffset: 10
+  startSpawnOffset: 8
   shipmentOffset: 1
 --- !u!4 &1776341089
 Transform:
