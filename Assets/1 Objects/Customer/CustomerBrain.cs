@@ -96,6 +96,7 @@ public class CustomerBrain : MonoBehaviour
         for (int i = 0; i < gridPositions.Length; i++)
         {
             targets[i] = new Vector2Int((int)gridPositions[i].x, (int)gridPositions[i].y);
+            Debug.Log($"X : {targets[i].x}, Y : {targets[i].y}");
         }
         return targets;
     }

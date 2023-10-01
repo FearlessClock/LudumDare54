@@ -24,7 +24,9 @@ public class CustomerBuyItemHandler : MonoBehaviour
     public void ClaimItem(Item target)
     {
         step++;
+        target.ItemBought();
         target.gameObject.SetActive(false);
+
     }
 
     public Item GetItemNotBought()

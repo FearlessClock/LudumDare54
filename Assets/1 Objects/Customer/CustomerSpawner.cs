@@ -16,10 +16,10 @@ public class CustomerSpawner : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
-
         if (targets.Count > 0)
         {
+            CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
+
             if (itemToTake > targets.Count) itemToTake = targets.Count;
 
             Item[] _targets = new Item[itemToTake];

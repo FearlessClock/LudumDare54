@@ -1,6 +1,7 @@
 using Grid;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Item : Block
@@ -9,6 +10,7 @@ public class Item : Block
 
     [SerializeField, Required] private SpriteRenderer spriteRenderer;
     [SerializeField, Required] private BoxCollider2D itemCollider;
+    [SerializeField] private bool isAlreadySpawn;
 
     private Vector3 lastPosition;
 
@@ -31,6 +33,8 @@ public class Item : Block
         lastPosition = transform.position;
 
         OnRelease.AddListener(MouseDropItem);
+
+        if (isAlreadySpawn) MouseDropItem();
     }
 
     private void MouseDropItem()
@@ -85,6 +89,19 @@ public class Item : Block
         {
             offset = blockLayoutOffset[i] * cellSize;
             GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
+        }
+    }
+
+    public void ItemBought()
+    {
+        float cellSize = GridManager.Instance.CellSize;
+        Vector3 offset;
+
+        // Empty All old positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
         }
     }
 }
