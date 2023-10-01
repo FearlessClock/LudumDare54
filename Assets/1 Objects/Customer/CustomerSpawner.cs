@@ -6,33 +6,23 @@ using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
-    [SerializeField] private CustomerMovementHandler customerPrefab = null;
+    [SerializeField] private CustomerBrain customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    //[SerializeField] private ItemAStarTargetPoints[] targets = null;
-    [SerializeField] private List<ItemAStarTargetPoints> targets = new List<ItemAStarTargetPoints>();
-    
-
-    /*private IEnumerator Start()
-    {
-        yield return new WaitForEndOfFrame();
-
-        CustomerMovementHandler customer = Instantiate<CustomerMovementHandler>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
-
-        customer.Init(targets, exitPoint.position);
-    }*/
+    [SerializeField] private List<Item> targets = new List<Item>();
+   
 
     public IEnumerator Spawn(int itemToTake)
     {
         yield return new WaitForEndOfFrame();
 
-        CustomerMovementHandler customer = Instantiate<CustomerMovementHandler>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
+        CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
 
         if (targets.Count > 0)
         {
             if (itemToTake > targets.Count) itemToTake = targets.Count;
 
-            ItemAStarTargetPoints[] _targets = new ItemAStarTargetPoints[itemToTake];
+            Item[] _targets = new Item[itemToTake];
 
             for (int i = 0; i < _targets.Length; i++)
             {
@@ -49,6 +39,13 @@ public class CustomerSpawner : MonoBehaviour
             }
 
             customer.Init(_targets, exitPoint.position);
+			customer.OnCustomerDone += CustomerDone;
         }
+    }
+	
+	
+    private void CustomerDone(CustomerBrain brain)
+    {
+        Destroy(brain.gameObject);
     }
 }

@@ -49,7 +49,7 @@ public class Item : Block
             return;
         }
 
-        int cellSize = GridManager.Instance.CellSize;
+        float cellSize = GridManager.Instance.CellSize;
         
         // Check if any targeted Cell is already Blocked
         for (int i = 0; i < blockLayoutOffset.Count; ++i)
@@ -73,7 +73,7 @@ public class Item : Block
 
     private void UpdateBlockCells(Vector3 newPos)
     {
-        int cellSize = GridManager.Instance.CellSize;
+        float cellSize = GridManager.Instance.CellSize;
         Vector3 offset;
 
         // Empty All old positions

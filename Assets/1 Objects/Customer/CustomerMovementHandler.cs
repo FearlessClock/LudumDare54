@@ -1,70 +1,49 @@
 using Codice.Client.BaseCommands.Merge;
 using DG.Tweening;
 using Grid;
+using HelperScripts.EventSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 public class CustomerMovementHandler : MonoBehaviour
 {
-    // Targets
-    // Path
-    //Checking grid
-    // Move
-
-    private ItemAStarTargetPoints[] itemsToBuy = null;
     private Vector2[] path = null;
     
     private Vector2 targetPosition;
-    private Vector2 exitPosition;
     private int pathStep = 0;
-    private int currentStepInTaskList = 0;
-    private Queue<ItemAStarTargetPoints> taskList = new Queue<ItemAStarTargetPoints>();
 
     private bool hasPath = false;
 
     [SerializeField] private float moveDuration = 0.05f;
     
-    private bool hasSeCasser = false;
     private bool isMoving = false;
     public Action OnArriveAtSpot = null;
-    public Action OnSeCasser = null;
+    public Action OnMovementFailed = null;
 
     AStarStuff.AStar aStarerer = new AStarStuff.AStar();
 
-    public void Init(ItemAStarTargetPoints[] itemsToBuy, Vector2 exitPosition)
+    private Vector2Int[] targets = null;
+    private Vector2 centerTarget;
+    public void MoveToPoint(Vector2Int[] targets, Vector2 centerTarget)
     {
-        this.itemsToBuy = itemsToBuy;
+        this.targets = targets;
+        this.centerTarget = centerTarget;
 
-        for (int i = 0; i < itemsToBuy.Length; i++)
-        {
-            taskList.Enqueue(itemsToBuy[i]);
-        }
-        this.exitPosition = exitPosition;
-        Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
         bool res = false;
-        Debug.DrawLine(this.transform.position, exitPosition, Color.blue, 4);
-        Debug.DrawLine(this.transform.position, taskList.Peek().transform.position, Color.green, 4);
-
-        for (int i = 0; i < targets.Length; i++)
-        {
-            Debug.DrawLine(this.transform.position, new Vector3(targets[i].x, targets[i].y), Color.gray, 4);
-        }
-        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
-        for (int i = 1; i < path.Length; i++)
-        {
-            Debug.DrawLine(path[i - 1], path[i], Color.yellow, 3);
-        }
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
         if (!res)
         {
-            // TODO: Complain flow
-
+            OnMovementFailed?.Invoke();
             Debug.Log("A customer did not find a path", this);
 
             return;
         }
+
+        GridManager.Instance.OnGridUpdated += OnGridUpdate;
 
         if(path.Length > 0)
         {
@@ -78,19 +57,33 @@ public class CustomerMovementHandler : MonoBehaviour
         }
     }
 
-    private Vector2Int[] GetTargetPoints(GridInformation[] gridInformations)
+    private void OnDestroy()
     {
-        Vector2Int[] targets = new Vector2Int[gridInformations.Length];
-        for (int i = 0; i < gridInformations.Length; i++)
-        {
-            targets[i] = new Vector2Int((int)gridInformations[i].worldPosition.x, (int)gridInformations[i].worldPosition.y);
-        }
-        return targets;
+        GridManager.Instance.OnGridUpdated -= OnGridUpdate;
     }
 
-    private Vector2Int GetIntVector2(Vector2 vec)
+    private void OnGridUpdate()
     {
-        return new Vector2Int((int)vec.x, (int)vec.y);
+        bool res = false;
+        path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
+        if (!res)
+        {
+            OnMovementFailed?.Invoke();
+            Debug.Log("A customer did not find a path", this);
+
+            return;
+        }
+
+        if (path.Length > 0)
+        {
+            targetPosition = path[1];
+            pathStep = 0;
+            hasPath = true;
+        }
+        else
+        {
+            DoneMoving();
+        }
     }
 
     private void Update()
@@ -116,48 +109,7 @@ public class CustomerMovementHandler : MonoBehaviour
         {
             pathStep = 0;
             hasPath = false;
-            if(taskList.Count == 0)
-            {
-                if (!hasSeCasser)
-                {
-                    hasSeCasser = true;
-                    OnSeCasser?.Invoke();
-                }
-                return;
-            }
-            GetNewPath();
-
             OnArriveAtSpot.Invoke();
-        }
-    }
-
-    private void GetNewPath()
-    {
-        taskList.Dequeue();
-        bool res = false;
-        if (taskList.Count > 0)
-        {
-            Vector2Int[] targets = GetTargetPoints(taskList.Peek().GetSurroundingAccessPoints());
-            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, taskList.Peek().transform.position, out res);
-        }
-        else
-        {
-            path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index,
-                                                new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, out res);
-        }
-        hasPath = res;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        return;
-        if (!Application.isPlaying) return;
-        if (path.Length == 0) return;
-
-        for (int i = 1; i < path.Length; i++)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawLine(path[i-1], path[i]);
         }
     }
 }

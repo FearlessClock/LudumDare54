@@ -5,16 +5,43 @@ using UnityEngine;
 
 public class CustomerBuyItemHandler : MonoBehaviour
 {
-    private CustomerMovementHandler movementHandler = null;
+    private Item[] itemsToBuy = null;
+    private int step = 0;
 
-    private void Awake()
+    public Item[] GetRemainingItems
     {
-        movementHandler = GetComponent<CustomerMovementHandler>();
-        movementHandler.OnArriveAtSpot += OnArrive;
+        get
+        {
+            List<Item> items = new List<Item>();
+            for (int i = step; i < itemsToBuy.Length; i++)
+            {
+                items.Add(itemsToBuy[i]);
+            }
+            return items.ToArray();
+        }
     }
 
-    private void OnArrive()
+    public void ClaimItem(Item target)
     {
+        step++;
+        target.gameObject.SetActive(false);
+    }
 
+    public Item GetItemNotBought()
+    {
+        return itemsToBuy[step];
+    }
+
+    public void Init(Item[] itemsToBuy)
+    {
+        this.itemsToBuy = itemsToBuy;
+    }
+
+    public void ReturnItems()
+    {
+        for (int i = 0;i < itemsToBuy.Length; i++)
+        {
+            itemsToBuy[i].gameObject.SetActive(true);
+        }
     }
 }

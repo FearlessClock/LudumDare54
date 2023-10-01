@@ -13,12 +13,21 @@ MonoBehaviour:
   m_Name: SO_Review Info
   m_EditorClassIdentifier: 
   allReview:
+  - title: Never. Again.
+    description: no
+    stars: 0
+  - title: meh
+    description: is meh
+    stars: 1
+  - title: is okay
+    description: too much
+    stars: 2
+  - title: Very good
+    description: Nothing to say, the best service and cat 3/5
+    stars: 3
   - title: great!
     description: Found a nice thing there
     stars: 4
-  - title: is okay
-    description: too much
-    stars: 1
   - title: Love cat
     description: Great cat
     stars: 5

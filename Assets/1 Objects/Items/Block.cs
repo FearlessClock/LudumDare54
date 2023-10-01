@@ -49,13 +49,14 @@ public class Block : MonoBehaviour
     {
         OnRelease?.Invoke();
     }
-
     public virtual void Init()
     {
         ComputeBlockLayout();
         if (pickable)
             OnDrag.AddListener(() => MoveTo(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
     }
+
+    public Vector2[] GetLayoutPositions() => blockLayoutOffset.ToArray();
 
     public void MoveTo(Vector2 pos)
     {
@@ -90,7 +91,7 @@ public class Block : MonoBehaviour
             return;
 
         // Take into account the size of a grid cell
-        int cellSize = GridManager.Instance.CellSize;
+        float cellSize = GridManager.Instance.CellSize;
         BottomLeftBound *= cellSize;
         TopRightBound *= cellSize;
         BlockPivotOffset *= cellSize;

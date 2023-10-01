@@ -1,10 +1,8 @@
 {
-    "name": "Customer",
+    "name": "Shop",
     "rootNamespace": "",
     "references": [
-        "GUID:d03f8ecae5df608459adcf9df314f56b",
-        "GUID:5423d83bbd2df5347827f415225555c4",
-        "GUID:7fb27e5a416730a49b4d41bc9c552394"
+        "GUID:d03f8ecae5df608459adcf9df314f56b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
