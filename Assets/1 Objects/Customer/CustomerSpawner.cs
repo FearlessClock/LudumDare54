@@ -72,9 +72,12 @@ public class CustomerSpawner : MonoBehaviour
         }
     }
 
-    public void RecovObject()
+    public void RecovObject(Item item)
     {
-
+        Debug.Log("recov item");
+        var spawnPos = shipmentLocation.position + new Vector3(UnityEngine.Random.Range(-shipmentOffset, shipmentOffset) + UnityEngine.Random.Range(-shipmentOffset, shipmentOffset), 0);
+        item.gameObject.SetActive(true);
+        targets.Add(item);
     }
 	
 	
