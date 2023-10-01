@@ -6,15 +6,16 @@ using UnityEngine;
 
 public class Item : Block
 {
-    [SerializeField] private Item_Data data;
+    [SerializeField] private ItemData data;
 
     [SerializeField, Required] private SpriteRenderer spriteRenderer;
     [SerializeField, Required] private BoxCollider2D itemCollider;
     [SerializeField] private bool isAlreadySpawn;
 
     private Vector3 lastPosition;
+    private bool wasPlacedOnce;
 
-    protected override void Start()
+    public override void Init()
     {
         name = data.Label;
 
@@ -22,7 +23,7 @@ public class Item : Block
             data.ShapeLayout.Add(Vector3.zero);
         blockLayoutOffset = data.ShapeLayout;
 
-        base.Start();
+        base.Init();
 
         spriteRenderer.sprite = data.Sprite;
         spriteRenderer.transform.localPosition = BlockPivotOffset;
@@ -36,6 +37,8 @@ public class Item : Block
 
         if (isAlreadySpawn) MouseDropItem();
     }
+
+    public void SetData(ItemData data) => this.data = data;
 
     private void MouseDropItem()
     {
@@ -68,6 +71,8 @@ public class Item : Block
         // Snap Position to Grid
         lastPosition = newPos;
         transform.position = newPos;
+
+        if (!wasPlacedOnce) wasPlacedOnce = true;
     }
 
     private void ReturnToLastPosition() => transform.position = lastPosition;
@@ -77,11 +82,14 @@ public class Item : Block
         float cellSize = GridManager.Instance.CellSize;
         Vector3 offset;
 
-        // Empty All old positions
-        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        if (wasPlacedOnce) // Only if Item was Blocking Grid cells
         {
-            offset = blockLayoutOffset[i] * cellSize;
-            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+            // Empty All old positions
+            for (int i = 0; i < blockLayoutOffset.Count; ++i)
+            {
+                offset = blockLayoutOffset[i] * cellSize;
+                GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+            }
         }
 
         // Update New positions

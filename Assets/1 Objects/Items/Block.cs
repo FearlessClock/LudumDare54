@@ -21,7 +21,7 @@ public class Block : MonoBehaviour
 
     [SerializeField] private bool pickable = true;
 
-    protected List<Vector2> blockLayoutOffset;
+    protected List<Vector2> blockLayoutOffset = new List<Vector2>();
 
     /// <summary>
     /// Distance from pivot to Lowest corner position
@@ -34,13 +34,6 @@ public class Block : MonoBehaviour
 
     public Vector2 BlockLayoutSize { get; private set; }
     public Vector2 BlockPivotOffset { get; private set; }
-
-    protected virtual void Start()
-    {
-        ComputeBlockLayout();
-        if (pickable)
-            OnDrag.AddListener(() => MoveTo(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
-    }
 
     private void OnMouseDown()
     {
@@ -55,6 +48,12 @@ public class Block : MonoBehaviour
     private void OnMouseUp()
     {
         OnRelease?.Invoke();
+    }
+    public virtual void Init()
+    {
+        ComputeBlockLayout();
+        if (pickable)
+            OnDrag.AddListener(() => MoveTo(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
     }
 
     public Vector2[] GetLayoutPositions() 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public struct Item_Data
+public struct ItemData
 {
     public string Label;
     public string Description;
