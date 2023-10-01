@@ -5,22 +5,23 @@ using UnityEngine;
 
 public class Item : Block
 {
-    [SerializeField] private Item_Data data;
+    [SerializeField] private ItemData data;
 
     [SerializeField, Required] private SpriteRenderer spriteRenderer;
     [SerializeField, Required] private BoxCollider2D itemCollider;
 
     private Vector3 lastPosition;
 
-    protected override void Start()
+    public override void Init()
     {
+        Debug.Log("Init ITEM : " + data.Label);
         name = data.Label;
 
         if (!data.ShapeLayout.Contains(Vector3.zero))
             data.ShapeLayout.Add(Vector3.zero);
         blockLayoutOffset = data.ShapeLayout;
 
-        base.Start();
+        base.Init();
 
         spriteRenderer.sprite = data.Sprite;
         spriteRenderer.transform.localPosition = BlockPivotOffset;
@@ -32,6 +33,8 @@ public class Item : Block
 
         OnRelease.AddListener(MouseDropItem);
     }
+
+    public void SetData(ItemData data) => this.data = data;
 
     private void MouseDropItem()
     {
