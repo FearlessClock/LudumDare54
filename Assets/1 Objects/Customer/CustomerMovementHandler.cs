@@ -1,13 +1,7 @@
-using Codice.Client.BaseCommands.Merge;
 using DG.Tweening;
 using Grid;
-using HelperScripts.EventSystem;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CustomerMovementHandler : MonoBehaviour
 {

@@ -1,6 +1,7 @@
 using Grid;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,6 +35,9 @@ public class Block : MonoBehaviour
 
     public Vector2 BlockLayoutSize { get; private set; }
     public Vector2 BlockPivotOffset { get; private set; }
+
+    protected Vector3 lastPosition;
+    protected bool wasPlacedOnce;
 
     private void OnMouseDown()
     {
@@ -104,6 +108,42 @@ public class Block : MonoBehaviour
         TopRightBound *= cellSize;
         BlockPivotOffset *= cellSize;
         BlockLayoutSize *= cellSize;
+    }
+
+    protected void UpdateBlockCells(Vector3 newPos)
+    {
+        float cellSize = GridManager.Instance.CellSize;
+
+        EmptyOldPositions(cellSize);
+
+        // Update New positions
+        UpdateNewPositions(cellSize , newPos);
+    }
+
+    protected void EmptyOldPositions(float cellSize)
+    {
+
+        Vector3 offset;
+        if (wasPlacedOnce) // Only if Item was Blocking Grid cells
+        {
+            // Empty All old positions
+            for (int i = 0; i < blockLayoutOffset.Count; ++i)
+            {
+                offset = blockLayoutOffset[i] * cellSize;
+                GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+            }
+        }
+    }
+
+    protected void UpdateNewPositions(float cellSize, Vector3 newPos)
+    {
+
+        Vector3 offset;
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
+        }
     }
 
     private void OnDestroy()
