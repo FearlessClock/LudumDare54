@@ -62,6 +62,7 @@ public class CustomerMovementHandler : MonoBehaviour
         GridManager.Instance.OnGridUpdated -= OnGridUpdate;
     }
 
+    
     private void OnGridUpdate()
     {
         bool res = false;

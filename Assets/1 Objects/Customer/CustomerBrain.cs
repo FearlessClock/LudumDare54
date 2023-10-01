@@ -13,6 +13,9 @@ public class CustomerBrain : MonoBehaviour
     [SerializeField] private CustomerComplainPopupHandler customerComplainHandler = null;
     [SerializeField] private EventScriptable onFileComplaint = null;
 
+    private CustomerSpawner customerSpawner;
+    
+
     Queue<CustomerAction> actions = new Queue<CustomerAction>();
 
     public Action<CustomerBrain> OnCustomerDone = null;
@@ -96,9 +99,13 @@ public class CustomerBrain : MonoBehaviour
         for (int i = 0; i < gridPositions.Length; i++)
         {
             targets[i] = new Vector2Int((int)gridPositions[i].x, (int)gridPositions[i].y);
-            Debug.Log($"X : {targets[i].x}, Y : {targets[i].y}");
         }
         return targets;
+    }
+
+    public void SetCustomerSpawner(CustomerSpawner spawner)
+    {
+        customerSpawner = spawner;
     }
 
 }
