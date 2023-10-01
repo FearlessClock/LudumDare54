@@ -1,3 +1,4 @@
+using Grid;
 using HelperScripts.EventSystem;
 using System;
 using System.Collections;
@@ -10,8 +11,6 @@ public class CustomerBrain : MonoBehaviour
     [SerializeField] private CustomerBuyItemHandler customerBuyItemHandler = null;
     [SerializeField] private CustomerComplainPopupHandler customerComplainHandler = null;
     [SerializeField] private EventScriptable onFileComplaint = null;
-
-    private CustomerSpawner customerSpawner;
     
 
     Queue<CustomerAction> actions = new Queue<CustomerAction>();
@@ -26,6 +25,7 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 exitPosition;
     private Vector2 entrancePosition;
 
+    public bool canLeave = false;
     public void Init(Item[] itemsToBuy, Vector2 exitPosition)
     {
         this.exitPosition = exitPosition;
@@ -33,16 +33,12 @@ public class CustomerBrain : MonoBehaviour
         actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y +1) }, entrancePosition, movementHandler));
         actions.Enqueue(new WaitAction(1));
 
-        for (int i = 0; i < itemsToBuy.Length; i++)
-        {
-            actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetAdjacentLayoutPositions()), itemsToBuy[i].transform.position, movementHandler));
-            actions.Enqueue(new BuyAction(itemsToBuy[i], customerBuyItemHandler));
-        }
-        actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
-
+        MakeActionSequence(itemsToBuy);
         customerBuyItemHandler.Init(itemsToBuy);
 
         actionRoutine = StartCoroutine(ActionHandleRoutine());
+        GridManager.Instance.OnGridUpdated += GridUpdated;
+        canLeave = false;
     }
 
     private void ActionFailed()
@@ -53,14 +49,9 @@ public class CustomerBrain : MonoBehaviour
         {
             actions.Enqueue(new ComplainAction(customerComplainHandler));
             actions.Enqueue(new WaitAction(2));
-            Item[] items = customerBuyItemHandler.GetRemainingItems;
-            for (int i = 0; i < items.Length; i++)
-            {
-                actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetAdjacentLayoutPositions()), items[i].transform.position, movementHandler));
-                actions.Enqueue(new BuyAction(items[i], customerBuyItemHandler));
-                actions.Enqueue(new WaitAction(2));
-            }
-            actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
+
+            MakeActionSequence();
+            
             hasRetried = true;
         }
         else
@@ -78,6 +69,36 @@ public class CustomerBrain : MonoBehaviour
         actionRoutine = StartCoroutine(ActionHandleRoutine());
     }
 
+    private void GridUpdated()
+    {
+
+        actionLoopStatus = false;
+        actions.Clear();
+        MakeActionSequence();
+        if (actionRoutine != null)
+        {
+            StopCoroutine(actionRoutine);
+        }
+        actionLoopStatus = true;
+        actionRoutine = StartCoroutine(ActionHandleRoutine());
+    }
+
+    private void MakeActionSequence(Item[] items = null)
+    {
+        if(items == null)
+            items = customerBuyItemHandler.GetRemainingItems;
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetAdjacentLayoutPositions()), items[i].transform.position, movementHandler));
+            actions.Enqueue(new BuyAction(items[i], customerBuyItemHandler));
+            actions.Enqueue(new WaitAction(2));
+        }
+        actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
+        actions.Enqueue(new LeaveStoreAction(this));
+
+    }
+
     private IEnumerator ActionHandleRoutine()
     {
         while(actions.Count > 0)
@@ -91,8 +112,9 @@ public class CustomerBrain : MonoBehaviour
                 break;
             }
         }
-        if (!actionLoopStatus)
+        if (canLeave)
         {
+            Debug.Log("customer done");
             OnCustomerDone?.Invoke(this);
         }
     }
@@ -107,9 +129,10 @@ public class CustomerBrain : MonoBehaviour
         return targets;
     }
 
-    public void SetCustomerSpawner(CustomerSpawner spawner)
+    private void OnDisable()
     {
-        customerSpawner = spawner;
+        GridManager.Instance.OnGridUpdated -= GridUpdated;
+
     }
 
 }
@@ -167,6 +190,7 @@ public class WalkAction : CustomerAction
     {
         hasFinishedMoving = true;
     }
+
 }
 
 public class WaitAction : CustomerAction
@@ -243,10 +267,8 @@ public class ComplainAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-        //Debug.Log("Do complain action");
         customerComplainHandler.Complain();
         yield return new WaitForSeconds(waitTime);
-        //Debug.Log("Complaining done");
 
         yield return null;
     }
@@ -276,6 +298,31 @@ public class FileComplaintAction : CustomerAction
         customerBuyItemHandler.ReturnItems();
         onFileComplaint.Call();
 
+        yield return null;
+    }
+}
+
+public class LeaveStoreAction : CustomerAction
+{
+    private Action failedAction = null;
+    CustomerBrain customerBrain = null;
+    public LeaveStoreAction(CustomerBrain brain)
+    {
+        customerBrain = brain;
+    }
+
+    public ActionType Type => ActionType.Buy;
+
+    public Action OnActionFailed
+    {
+        get { return failedAction; }
+        set { failedAction += value; }
+    }
+
+    public IEnumerator DoAction()
+    {
+            Debug.Log("done action");
+        customerBrain.canLeave = true;
         yield return null;
     }
 }

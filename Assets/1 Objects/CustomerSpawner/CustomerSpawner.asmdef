@@ -1,0 +1,17 @@
+{
+    "name": "CustomerSpawner",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f1429a2d2f3181746aa5d488e087c61d",
+        "GUID:5423d83bbd2df5347827f415225555c4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
