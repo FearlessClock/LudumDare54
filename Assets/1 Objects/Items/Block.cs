@@ -56,7 +56,15 @@ public class Block : MonoBehaviour
             OnDrag.AddListener(() => MoveTo(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
     }
 
-    public Vector2[] GetLayoutPositions() => blockLayoutOffset.ToArray();
+    public Vector2[] GetLayoutPositions()
+    {
+        Vector2 currentPos = transform.position;
+        Vector2[] layoutPosition = blockLayoutOffset.ToArray();
+        for (int i = 0; i < layoutPosition.Length; i++)
+            layoutPosition[i] += currentPos;
+        
+        return layoutPosition; 
+    }
 
     public void MoveTo(Vector2 pos)
     {

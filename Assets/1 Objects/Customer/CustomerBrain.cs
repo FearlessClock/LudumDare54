@@ -13,6 +13,9 @@ public class CustomerBrain : MonoBehaviour
     [SerializeField] private CustomerComplainPopupHandler customerComplainHandler = null;
     [SerializeField] private EventScriptable onFileComplaint = null;
 
+    private CustomerSpawner customerSpawner;
+    
+
     Queue<CustomerAction> actions = new Queue<CustomerAction>();
 
     public Action<CustomerBrain> OnCustomerDone = null;
@@ -34,7 +37,7 @@ public class CustomerBrain : MonoBehaviour
             actions.Enqueue(new WalkAction(GetTargetPoints(itemsToBuy[i].GetLayoutPositions()), itemsToBuy[i].transform.position, movementHandler));
             actions.Enqueue(new BuyAction(itemsToBuy[i], customerBuyItemHandler));
         }
-        actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
+        actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
 
         customerBuyItemHandler.Init(itemsToBuy);
 
@@ -51,16 +54,17 @@ public class CustomerBrain : MonoBehaviour
             Item[] items = customerBuyItemHandler.GetRemainingItems;
             for (int i = 0; i < items.Length; i++)
             {
-                actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetLayoutPositions()), items[i].transform.position, movementHandler));
+                actions.Enqueue(new WalkAction(GetTargetPoints(items[i].GetAdjacentLayoutPositions()), items[i].transform.position, movementHandler));
                 actions.Enqueue(new BuyAction(items[i], customerBuyItemHandler));
             }
-            actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
+            actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)exitPosition.x, (int)exitPosition.y) }, exitPosition, movementHandler));
             hasRetried = true;
         }
         else
         {
-            actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
+            actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
             actions.Enqueue(new FileComplaintAction(onFileComplaint, customerBuyItemHandler));
+
             hasRetried = true;
         }
         if (actionRoutine != null)
@@ -90,14 +94,19 @@ public class CustomerBrain : MonoBehaviour
         }
     }
 
-    private Vector2Int[] GetTargetPoints(Vector2[] gridPositions)
+    private Vector2[] GetTargetPoints(Vector2[] gridPositions)
     {
-        Vector2Int[] targets = new Vector2Int[gridPositions.Length];
+        Vector2[] targets = new Vector2[gridPositions.Length];
         for (int i = 0; i < gridPositions.Length; i++)
         {
             targets[i] = new Vector2Int((int)gridPositions[i].x, (int)gridPositions[i].y);
         }
         return targets;
+    }
+
+    public void SetCustomerSpawner(CustomerSpawner spawner)
+    {
+        customerSpawner = spawner;
     }
 
 }
@@ -112,7 +121,7 @@ public interface CustomerAction
 
 public class WalkAction : CustomerAction
 {
-    private Vector2Int[] targetPoints = null;
+    private Vector2[] targetPoints = null;
     private Vector2 center;
     private CustomerMovementHandler movement = null;
 
@@ -120,9 +129,9 @@ public class WalkAction : CustomerAction
 
     private Action failedAction = null;
 
-    public WalkAction(Vector2Int[] itemAStarTargetPoints, Vector2 center, CustomerMovementHandler movement)
+    public WalkAction(Vector2[] itemAStarTargetPoints, Vector2 center, CustomerMovementHandler movement)
     {
-        this.targetPoints = itemAStarTargetPoints;
+        this.targetPoints = itemAStarTargetPoints; //available adjacents cell must be sent through
         this.movement = movement;
         this.center = center;
     }
@@ -137,9 +146,9 @@ public class WalkAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-        movement.MoveToPoint(targetPoints, center);
         movement.OnArriveAtSpot += OnDoneMoving;
         movement.OnMovementFailed += OnMovementFailed;
+        movement.MoveToPoint(targetPoints, center);
         while (!hasFinishedMoving)
         {
             yield return new WaitForSeconds(0.7f);
@@ -206,10 +215,10 @@ public class ComplainAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-        Debug.Log("Do complain action");
+        //Debug.Log("Do complain action");
         customerComplainHandler.Complain();
         yield return new WaitForSeconds(waitTime);
-        Debug.Log("Complaining done");
+        //Debug.Log("Complaining done");
 
         yield return null;
     }

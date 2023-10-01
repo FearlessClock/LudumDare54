@@ -1,6 +1,7 @@
 using Grid;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Item : Block
@@ -9,9 +10,11 @@ public class Item : Block
 
     [SerializeField, Required] private SpriteRenderer spriteRenderer;
     [SerializeField, Required] private BoxCollider2D itemCollider;
+    [SerializeField] private bool isAlreadySpawn;
 
     private Vector3 lastPosition;
     private bool wasPlacedOnce;
+    private List<Vector2> adjacentBlockLayoutOffset = new List<Vector2>();
 
     public override void Init()
     {
@@ -22,6 +25,7 @@ public class Item : Block
         blockLayoutOffset = data.Layout.Positions;
 
         base.Init();
+        ComputeAdjacentBlocks();
 
         spriteRenderer.sprite = data.Sprite;
         spriteRenderer.transform.localPosition = BlockPivotOffset;
@@ -32,11 +36,45 @@ public class Item : Block
         lastPosition = transform.position;
 
         OnRelease.AddListener(MouseDropItem);
+
+        if (isAlreadySpawn) MouseDropItem();
+    }
+
+    public Vector2[] GetAdjacentLayoutPositions()
+    {
+        Vector2 currentPos = transform.position;
+        var positions = adjacentBlockLayoutOffset.ToArray();
+        for (int i = 0; i < positions.Length; ++i)
+            positions[i] += currentPos;
+
+        return positions;
     }
 
     public void SetData(ItemData data) => this.data = data;
 
-    private void MouseDropItem()
+    public void ForceGridPlacement() => MouseDropItem();
+    
+    private void ComputeAdjacentBlocks()
+    {
+        void AddToAdjacentBlock(Vector2 pos)
+        {
+            if (blockLayoutOffset.Contains(pos) || adjacentBlockLayoutOffset.Contains(pos))
+                return;
+            adjacentBlockLayoutOffset.Add(pos);
+        }
+
+        Vector2 currentOffset;
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            currentOffset = blockLayoutOffset[i];
+            AddToAdjacentBlock(currentOffset + Vector2.up);
+            AddToAdjacentBlock(currentOffset + Vector2.down);
+            AddToAdjacentBlock(currentOffset + Vector2.left);
+            AddToAdjacentBlock(currentOffset + Vector2.right);
+        }
+    }
+
+    public void MouseDropItem()
     {
         // Check if Corner Bounds are Inside the Grid
         // better than checking block's every cells
@@ -93,6 +131,19 @@ public class Item : Block
         {
             offset = blockLayoutOffset[i] * cellSize;
             GridManager.Instance.UpdateGridAtWorldPosition(newPos + offset, GridInformation.GridType.Item);
+        }
+    }
+
+    public void ItemBought()
+    {
+        float cellSize = GridManager.Instance.CellSize;
+        Vector3 offset;
+
+        // Empty All old positions
+        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        {
+            offset = blockLayoutOffset[i] * cellSize;
+            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
         }
     }
 }

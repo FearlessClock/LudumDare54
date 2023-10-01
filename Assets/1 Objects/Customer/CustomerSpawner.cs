@@ -3,23 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CustomerSpawner : MonoBehaviour
 {
+    [Header("Ref")]
     [SerializeField] private CustomerBrain customerPrefab = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
-    [SerializeField] private List<Item> targets = new List<Item>();
-   
 
-    public IEnumerator Spawn(int itemToTake)
+
+    [Header("Shipment")]
+    [SerializeField] private Transform shipmentLocation;
+
+    
+
+    private void Start()
+    {
+        
+    }
+
+    public IEnumerator Spawn(int itemToTake, List<Item> targets)
     {
         yield return new WaitForEndOfFrame();
 
-        CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
-
         if (targets.Count > 0)
         {
+            CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
+
             if (itemToTake > targets.Count) itemToTake = targets.Count;
 
             Item[] _targets = new Item[itemToTake];
@@ -39,6 +50,7 @@ public class CustomerSpawner : MonoBehaviour
             }
 
             customer.Init(_targets, exitPoint.position);
+            customer.SetCustomerSpawner(this);
 			customer.OnCustomerDone += CustomerDone;
         }
     }

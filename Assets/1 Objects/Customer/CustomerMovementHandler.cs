@@ -26,9 +26,9 @@ public class CustomerMovementHandler : MonoBehaviour
 
     AStarStuff.AStar aStarerer = new AStarStuff.AStar();
 
-    private Vector2Int[] targets = null;
+    private Vector2[] targets = null;
     private Vector2 centerTarget;
-    public void MoveToPoint(Vector2Int[] targets, Vector2 centerTarget)
+    public void MoveToPoint(Vector2[] targets, Vector2 centerTarget)
     {
         this.targets = targets;
         this.centerTarget = centerTarget;

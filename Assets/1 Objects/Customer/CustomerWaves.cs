@@ -14,7 +14,7 @@ public class CustomerWaves : MonoBehaviour
 
     private void Awake()
     {
-        currentTimeBtwSpawn = timeBtwSpawn;
+        //currentTimeBtwSpawn = timeBtwSpawn;
     }
     private void Update()
     {
@@ -25,14 +25,15 @@ public class CustomerWaves : MonoBehaviour
 
         }else currentTimeBtwSpawn -= Time.deltaTime;
     }
+
     [Button("Spawn Customer")]
     void SpawnSimpleCustomer()
     {
-        StartCoroutine(cs.Spawn(maxNumberOfItem));
+        StartCoroutine(cs.Spawn(maxNumberOfItem, Shipment.Instance.Targets));
     }
 
     void SpawnCustomer()
     {
-        StartCoroutine(cs.Spawn(Random.Range(1, maxNumberOfItem + 1)));
+        StartCoroutine(cs.Spawn(Random.Range(1, maxNumberOfItem + 1), Shipment.Instance.Targets));
     }
 }
