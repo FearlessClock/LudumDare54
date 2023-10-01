@@ -8,6 +8,11 @@ public class ItemLayoutDrawer : PropertyDrawer
 {
     const int CELL_SIZE = 18;
 
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return EditorGUIUtility.singleLineHeight * 6f;
+    }
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         if(property.propertyType != SerializedPropertyType.Generic)
@@ -16,7 +21,9 @@ public class ItemLayoutDrawer : PropertyDrawer
             return;
         }
 
-        EditorGUILayout.LabelField(label.text);
+        Rect labelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+        EditorGUI.LabelField(labelRect, label.text);
+
         var layout = property.FindPropertyRelative("positions");
         List<SerializedProperty> layoutPropertyList = new();
         List<Vector2> layoutPositions = new();
@@ -27,26 +34,28 @@ public class ItemLayoutDrawer : PropertyDrawer
             layoutPositions.Add(layoutPropertyList[i].vector2Value);
         }
 
-        Rect togglePosition = position;
+        Vector2 cellPos;
+        Rect togglePosition = new Rect(position.position, Vector2.one * CELL_SIZE);
         for (int y = 2; y > -3; --y)
         {
-            togglePosition.y = position.y + CELL_SIZE * y + 2 * CELL_SIZE;
+            togglePosition.y = position.y - CELL_SIZE * y + 2 * CELL_SIZE + 10;
             for (int x = -2; x < 3; ++x)
             {
-                togglePosition.x = position.x + CELL_SIZE * x + 2 * CELL_SIZE;
+                cellPos = new Vector2(x, y);
+                togglePosition.x = position.x + CELL_SIZE * x + 2 * CELL_SIZE + 90;
 
-                bool isCenter = (x == 0 && x == y) ? true : false;
+                bool isCenter = x == 0 && x == y;
 
-                if(!isCenter)
-                    EditorGUI.BeginChangeCheck();
-                bool toggled = EditorGUI.Toggle(togglePosition, isCenter);
+                if(!isCenter) EditorGUI.BeginChangeCheck();
+
+                bool toggled = EditorGUI.Toggle(togglePosition, isCenter || layoutPositions.Contains(cellPos));
 
                 if(!isCenter && EditorGUI.EndChangeCheck())
                 {
                     if (toggled)
-                        AddArrayElement(layout, new Vector2(x, y));
+                        AddArrayElement(layout, cellPos);
                     else
-                        RemoveArrayElement(layout, new Vector2(x, y));
+                        RemoveArrayElement(layout, cellPos);
                 }
             }
         }

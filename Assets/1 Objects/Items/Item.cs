@@ -17,9 +17,9 @@ public class Item : Block
     {
         name = data.Label;
 
-        if (!data.ShapeLayout.Contains(Vector3.zero))
-            data.ShapeLayout.Add(Vector3.zero);
-        blockLayoutOffset = data.ShapeLayout;
+        if (!data.Layout.Contains(Vector3.zero))
+            data.Layout.AddCenterBlock();
+        blockLayoutOffset = data.Layout.Positions;
 
         base.Init();
 
