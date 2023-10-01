@@ -351,7 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3404f6b41866a4d8449fcb7af484be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfItemsAtStart: 1
+  numberOfItemsAtStart: 3
+  startSpawnOffset: 10
   shipmentOffset: 1
 --- !u!1 &591846824
 GameObject:
