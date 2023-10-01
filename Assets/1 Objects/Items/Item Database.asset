@@ -15,18 +15,18 @@ MonoBehaviour:
   items:
   - Label: Empty Bucket
     Description: 
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 68c08d9a554fae049ad336837024b7df, type: 3}
     ShapeLayout:
     - {x: 0, y: 0}
   - Label: Endless Ball of Yarn
     Description: 
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 68c08d9a554fae049ad336837024b7df, type: 3}
     ShapeLayout:
     - {x: 0, y: 0}
     - {x: 0, y: 1}
   - Label: Adalin's Wish
     Description: 
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 68c08d9a554fae049ad336837024b7df, type: 3}
     ShapeLayout:
     - {x: 0, y: 0}
     - {x: 1, y: 0}

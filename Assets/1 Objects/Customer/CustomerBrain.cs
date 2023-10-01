@@ -13,6 +13,9 @@ public class CustomerBrain : MonoBehaviour
     [SerializeField] private CustomerComplainPopupHandler customerComplainHandler = null;
     [SerializeField] private EventScriptable onFileComplaint = null;
 
+    private CustomerSpawner customerSpawner;
+    
+
     Queue<CustomerAction> actions = new Queue<CustomerAction>();
 
     public Action<CustomerBrain> OnCustomerDone = null;
@@ -61,6 +64,13 @@ public class CustomerBrain : MonoBehaviour
         {
             actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
             actions.Enqueue(new FileComplaintAction(onFileComplaint, customerBuyItemHandler));
+            
+            Item[] items = customerBuyItemHandler.GetRemainingItems;
+            for (int i = 0; i < items.Length; i++)
+            {
+                customerSpawner.RecovObject(items[i]);
+            }
+
             hasRetried = true;
         }
         if (actionRoutine != null)
@@ -98,6 +108,11 @@ public class CustomerBrain : MonoBehaviour
             targets[i] = new Vector2Int((int)gridPositions[i].x, (int)gridPositions[i].y);
         }
         return targets;
+    }
+
+    public void SetCustomerSpawner(CustomerSpawner spawner)
+    {
+        customerSpawner = spawner;
     }
 
 }
