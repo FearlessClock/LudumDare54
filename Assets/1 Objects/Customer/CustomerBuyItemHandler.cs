@@ -23,9 +23,8 @@ public class CustomerBuyItemHandler : MonoBehaviour
     public void ClaimItem(Item target)
     {
         step++;
+        Shipment.Instance.RemoveFromAvailableTargets(target);
         target.ItemBought();
-        target.gameObject.SetActive(false);
-
     }
 
     public Item GetItemNotBought()
@@ -40,10 +39,7 @@ public class CustomerBuyItemHandler : MonoBehaviour
 
     public void ReturnItems()
     {
-        for (int i = 0;i < itemsToBuy.Length; i++)
-        {
-            Shipment.Instance.RecovObject(itemsToBuy[i]);
-            //itemsToBuy[i].gameObject.SetActive(true);
-        }
+        for (int i = 0; i < itemsToBuy.Length - step; i++)
+            Shipment.Instance.AddToAvailableTargets(itemsToBuy[i]);
     }
 }

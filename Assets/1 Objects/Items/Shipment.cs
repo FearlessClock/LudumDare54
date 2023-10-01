@@ -1,3 +1,4 @@
+using Grid;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,17 +10,17 @@ public class Shipment : MonoBehaviour
 
     [Header("Start spawn")]
     [SerializeField] private int numberOfItemsAtStart; 
-    [SerializeField] private float startSpawnOffset;
 
-    [Header("Shipment")]
-    [SerializeField] private float shipmentOffset;
-    private List<Item> allTargets = new List<Item>();
-    private List<Item> targets = new List<Item>();
-    public List<Item> Targets { get => targets;}
+    [Header("Storage")]
+    [SerializeField] private Vector2 storageAreaSize;
+    private List<Item> allItems = new List<Item>();
+
+    private List<Item> availableTargets = new List<Item>();
+    public List<Item> Targets { get => availableTargets;}
 
     [Header("Spawn item")]
-    [SerializeField] private float timeBtwSpawn;
-    private float currentTimeBetwSpawn;
+    [SerializeField] private float timeBetweenSpawn;
+    private float currentTimeBetweenSpawn;
 
 
 
@@ -37,49 +38,71 @@ public class Shipment : MonoBehaviour
     private void Start()
     {
         SetItems();
-        currentTimeBetwSpawn = timeBtwSpawn;
+        currentTimeBetweenSpawn = timeBetweenSpawn;
     }
 
     private void Update()
     {
-        if (currentTimeBetwSpawn < 0)
+        if (currentTimeBetweenSpawn < 0)
         {
-            currentTimeBetwSpawn = timeBtwSpawn;
-            SpawnItem();
+            currentTimeBetweenSpawn = timeBetweenSpawn;
+            SpawnItemInStorage();
         }
-        else currentTimeBetwSpawn -= Time.deltaTime;
+        else currentTimeBetweenSpawn -= Time.deltaTime;
     }
 
-    void SetItems()
+    private void SetItems()
     {
-        allTargets = ItemBuilder.GetAll();
+        allItems = ItemBuilder.GetAll();
 
         for (int i = 0; i < numberOfItemsAtStart; i++)
         {
-            var item = allTargets[Random.Range(0, allTargets.Count)];
+            var item = GetRandomItem();
+            Debug.Log("Spawned " + item.name);
+            var spawnPos = GridManager.Instance.GetRandomCellPosition();
+            item.MoveTo(spawnPos);
 
-            targets.Add(item);
-
-            var spawnPos = new Vector3(Random.Range(-startSpawnOffset, startSpawnOffset) + Random.Range(-startSpawnOffset, startSpawnOffset), 0);
-            targets[i].MoveTo(spawnPos);
-            targets[i].gameObject.SetActive(true);
-            //targets[i].MouseDropItem();
-            
+            item.gameObject.SetActive(true);
+            item.ForceGridPlacement();
         }
     }
 
-    public void RecovObject(Item item)
+    private Item GetRandomItem()
     {
-        var spawnPos = transform.position + new Vector3(UnityEngine.Random.Range(-shipmentOffset, shipmentOffset) + UnityEngine.Random.Range(-shipmentOffset, shipmentOffset), 0);
-        item.gameObject.SetActive(true);
-        item.gameObject.transform.position = spawnPos;
-        targets.Add(item);
+        var item = Instantiate(allItems[Random.Range(0, allItems.Count)]);
+        item.Init();
+        return item;
     }
 
-    public void SpawnItem()
+    private void SpawnItemInStorage()
     {
-        var item = Instantiate(allTargets[Random.Range(0, allTargets.Count)].gameObject, transform.position, transform.rotation);
-        item.GetComponent<Item>()?.Init();
-        RecovObject(item.GetComponent<Item>());
+        var spawnPos = transform.position + new Vector3(Random.Range(-storageAreaSize.x, storageAreaSize.x), Random.Range(-storageAreaSize.y, storageAreaSize.y), 0) / 2f;
+        
+        var item = GetRandomItem();
+        item.MoveTo(spawnPos);
+
+        item.gameObject.SetActive(true);
+    }
+
+    public void AddToAvailableTargets(Item item)
+    {
+        if (availableTargets.Contains(item))
+            return;
+
+        availableTargets.Add(item);
+    }
+
+    public void RemoveFromAvailableTargets(Item item)
+    {
+        if (!availableTargets.Contains(item))
+            return;
+
+        availableTargets.Remove(item);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(.7f, .72f, .87f);
+        Gizmos.DrawWireCube(transform.position, storageAreaSize);
     }
 }
