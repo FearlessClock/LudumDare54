@@ -354,6 +354,7 @@ MonoBehaviour:
   numberOfItemsAtStart: 3
   startSpawnOffset: 10
   shipmentOffset: 1
+  timeBtwSpawn: 3
 --- !u!1 &591846824
 GameObject:
   m_ObjectHideFlags: 0
