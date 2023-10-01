@@ -64,12 +64,6 @@ public class CustomerBrain : MonoBehaviour
         {
             actions.Enqueue(new WalkAction(new Vector2Int[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
             actions.Enqueue(new FileComplaintAction(onFileComplaint, customerBuyItemHandler));
-            
-            Item[] items = customerBuyItemHandler.GetRemainingItems;
-            for (int i = 0; i < items.Length; i++)
-            {
-                customerSpawner.RecovObject(items[i]);
-            }
 
             hasRetried = true;
         }

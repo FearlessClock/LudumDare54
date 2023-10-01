@@ -15,32 +15,15 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Shipment")]
     [SerializeField] private Transform shipmentLocation;
-    [SerializeField] private float shipmentOffset;
-    [SerializeField] private int numberOfItemsAtStart;
-    /*[SerializeField] */private List<Item> allTargets = new List<Item>();
-    /*[SerializeField] */private List<Item> targets = new List<Item>();
+
+    
 
     private void Start()
     {
-        allTargets = ItemBuilder.GetAll();
-
-        for (int i = 0; i < numberOfItemsAtStart; i++)
-        {
-            var item = allTargets[UnityEngine.Random.Range(0, allTargets.Count)];
-
-            while (targets.Contains(item))
-            {
-                item = allTargets[UnityEngine.Random.Range(0, allTargets.Count)];
-            }
-            targets.Add(item);
-            
-            var spawnPos = shipmentLocation.position + new Vector3(UnityEngine.Random.Range(-shipmentOffset, shipmentOffset) + UnityEngine.Random.Range(-shipmentOffset, shipmentOffset), 0);
-            item.MoveTo(spawnPos);
-            item.gameObject.SetActive(true);
-        }
+        
     }
 
-    public IEnumerator Spawn(int itemToTake)
+    public IEnumerator Spawn(int itemToTake, List<Item> targets)
     {
         yield return new WaitForEndOfFrame();
 
@@ -70,14 +53,6 @@ public class CustomerSpawner : MonoBehaviour
             customer.SetCustomerSpawner(this);
 			customer.OnCustomerDone += CustomerDone;
         }
-    }
-
-    public void RecovObject(Item item)
-    {
-        Debug.Log("recov item");
-        var spawnPos = shipmentLocation.position + new Vector3(UnityEngine.Random.Range(-shipmentOffset, shipmentOffset) + UnityEngine.Random.Range(-shipmentOffset, shipmentOffset), 0);
-        item.gameObject.SetActive(true);
-        targets.Add(item);
     }
 	
 	
