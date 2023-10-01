@@ -87,10 +87,30 @@ public class Item : Block
         }
 
         float cellSize = GridManager.Instance.CellSize;
-        
-        // Check if any targeted Cell is already Blocked
+        Vector2Int oldIndex, newIndex;
         for (int i = 0; i < blockLayoutOffset.Count; ++i)
         {
+            if (wasPlacedOnce)
+            {
+                newIndex = GridManager.Instance.GetAtWorldLocation((Vector3)blockLayoutOffset[i] * cellSize + transform.position).index;
+
+                // Check if targeted Cell is part of the last Positions (if it was placed)
+                bool abort = false;
+                for (int n = 0; n < blockLayoutOffset.Count; ++n)
+                {
+                    oldIndex = GridManager.Instance.GetAtWorldLocation((Vector3)blockLayoutOffset[n] * cellSize + lastPosition).index;
+                    if (oldIndex == newIndex)
+                    {
+                        // This block is being placed on an Old position
+                        // We know it will be empty when we move
+                        abort = true;
+                        break;
+                    }
+                }
+                if(abort) continue;
+            }
+
+            // Check if targeted Cell is already Blocked
             if (!GridManager.Instance.GetAtWorldLocation((Vector3)blockLayoutOffset[i] * cellSize + transform.position).isBlocked)
                 continue;
 
