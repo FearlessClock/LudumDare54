@@ -11,10 +11,10 @@ public class Item : Block
     [SerializeField, Required] private BoxCollider2D itemCollider;
 
     private Vector3 lastPosition;
+    private bool wasPlacedOnce;
 
     public override void Init()
     {
-        Debug.Log("Init ITEM : " + data.Label);
         name = data.Label;
 
         if (!data.ShapeLayout.Contains(Vector3.zero))
@@ -67,6 +67,8 @@ public class Item : Block
         // Snap Position to Grid
         lastPosition = newPos;
         transform.position = newPos;
+
+        if (!wasPlacedOnce) wasPlacedOnce = true;
     }
 
     private void ReturnToLastPosition() => transform.position = lastPosition;
@@ -76,11 +78,14 @@ public class Item : Block
         float cellSize = GridManager.Instance.CellSize;
         Vector3 offset;
 
-        // Empty All old positions
-        for (int i = 0; i < blockLayoutOffset.Count; ++i)
+        if (wasPlacedOnce) // Only if Item was Blocking Grid cells
         {
-            offset = blockLayoutOffset[i] * cellSize;
-            GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+            // Empty All old positions
+            for (int i = 0; i < blockLayoutOffset.Count; ++i)
+            {
+                offset = blockLayoutOffset[i] * cellSize;
+                GridManager.Instance.UpdateGridAtWorldPosition(lastPosition + offset, GridInformation.GridType.Empty);
+            }
         }
 
         // Update New positions
