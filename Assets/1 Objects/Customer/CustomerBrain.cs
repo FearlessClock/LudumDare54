@@ -10,8 +10,6 @@ public class CustomerBrain : MonoBehaviour
     [SerializeField] private CustomerBuyItemHandler customerBuyItemHandler = null;
     [SerializeField] private CustomerComplainPopupHandler customerComplainHandler = null;
     [SerializeField] private EventScriptable onFileComplaint = null;
-
-    private CustomerSpawner customerSpawner;
     
 
     Queue<CustomerAction> actions = new Queue<CustomerAction>();
@@ -93,6 +91,7 @@ public class CustomerBrain : MonoBehaviour
         }
         if (!actionLoopStatus)
         {
+            Debug.Log("customer done");
             OnCustomerDone?.Invoke(this);
         }
     }
@@ -107,10 +106,6 @@ public class CustomerBrain : MonoBehaviour
         return targets;
     }
 
-    public void SetCustomerSpawner(CustomerSpawner spawner)
-    {
-        customerSpawner = spawner;
-    }
 
 }
 public enum ActionType{ Walk, Buy, Wait}

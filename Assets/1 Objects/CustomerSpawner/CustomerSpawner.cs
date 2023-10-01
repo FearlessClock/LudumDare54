@@ -7,15 +7,13 @@ using UnityEngine;
 public class CustomerSpawner : MonoBehaviour
 {
     [Header("Ref")]
-    [SerializeField] private CustomerBrain customerPrefab = null;
+    [SerializeField] private CustomerPooling customerPool = null;
     [SerializeField] private Transform entrancePoint = null;
     [SerializeField] private Transform exitPoint = null;
 
 
     [Header("Shipment")]
     [SerializeField] private Transform shipmentLocation;
-
-    
 
     private void Start()
     {
@@ -28,7 +26,8 @@ public class CustomerSpawner : MonoBehaviour
 
         if (targets.Count > 0)
         {
-            CustomerBrain customer = Instantiate<CustomerBrain>(customerPrefab, entrancePoint.position, entrancePoint.rotation, transform);
+            CustomerBrain customer = customerPool.GetCustomer() ;
+            customer.transform.position = entrancePoint.position;
 
             if (itemToTake > targets.Count) itemToTake = targets.Count;
 
@@ -49,7 +48,6 @@ public class CustomerSpawner : MonoBehaviour
             }
 
             customer.Init(_targets, exitPoint.position);
-            customer.SetCustomerSpawner(this);
 			customer.OnCustomerDone += CustomerDone;
         }
     }
@@ -57,6 +55,6 @@ public class CustomerSpawner : MonoBehaviour
 	
     private void CustomerDone(CustomerBrain brain)
     {
-        Destroy(brain.gameObject);
+        customerPool.ReturnCustomer(brain);
     }
 }
