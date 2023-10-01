@@ -13,6 +13,10 @@ namespace Grid
         private GridInformation[,] grid = null;
         public GridInformation[,] GetGrid => grid;
 
+        private SpriteRenderer[,] spriteGrid = null;
+        [SerializeField] private SpriteRenderer gridSpritePrefab = null;
+        [SerializeField] private Sprite[] gridImages = null;
+
         [SerializeField] private int width = 0; 
         [SerializeField] private int height = 0;
 
@@ -34,13 +38,16 @@ namespace Grid
             }
 
             grid = new GridInformation[height, width];
+            spriteGrid = new SpriteRenderer[height, width];
             offset.x = transform.position.x - size * width /2;
             offset.y = transform.position.y - size * height / 2;
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset), new Vector2Int(x,y), false); 
+                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset), new Vector2Int(x,y), false);
+                    spriteGrid[y, x] = Instantiate(gridSpritePrefab, new Vector3(x, y) + offset, Quaternion.identity, this.transform);
+                    spriteGrid[y, x].sprite = gridImages[(x +y) % 2];
                 }
             }
             OnGridUpdated?.Invoke();
