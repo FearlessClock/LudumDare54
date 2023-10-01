@@ -8,5 +8,12 @@ public struct ItemData
     public string Label;
     public string Description;
     public Sprite Sprite;
-    public List<Vector2> ShapeLayout;
+    public ItemLayout layout;
+    [Space(50)]public List<Vector2> ShapeLayout;
+}
+
+[Serializable]
+public struct ItemLayout
+{
+    public List<Vector2> positions;
 }
