@@ -42,6 +42,7 @@ MonoBehaviour:
       - {x: 0, y: 1}
       - {x: 1, y: 1}
       - {x: 1, y: 0}
+      - {x: 0, y: 0}
   - Label: Swordlighter
     Description: 
     Sprite: {fileID: 21300000, guid: 6b5410d4a21b3eb47bae14f7058d4b13, type: 3}
@@ -49,6 +50,7 @@ MonoBehaviour:
       positions:
       - {x: 1, y: 0}
       - {x: -1, y: 0}
+      - {x: 0, y: 0}
   - Label: Slayer of Foes
     Description: 
     Sprite: {fileID: 21300000, guid: 8c69a8538a6c14747bad879f2ccfd667, type: 3}
@@ -56,3 +58,29 @@ MonoBehaviour:
       positions:
       - {x: 0, y: 1}
       - {x: 0, y: -1}
+      - {x: 0, y: 0}
+  - Label: Egg
+    Description: 
+    Sprite: {fileID: 21300000, guid: a8a28d6179d81d14daeaf86725b01f4d, type: 3}
+    Layout:
+      positions: []
+  - Label: Boat
+    Description: 
+    Sprite: {fileID: 21300000, guid: ba202f608b618354fbce8369c76c09d7, type: 3}
+    Layout:
+      positions:
+      - {x: -1, y: 1}
+      - {x: -1, y: 0}
+      - {x: 0, y: 1}
+      - {x: 1, y: 1}
+      - {x: 1, y: 0}
+  - Label: Rocketship
+    Description: 
+    Sprite: {fileID: 21300000, guid: 0e50cb2d95d1b62468013b8b06d9cee2, type: 3}
+    Layout:
+      positions:
+      - {x: 0, y: 1}
+      - {x: 1, y: 1}
+      - {x: 1, y: 0}
+      - {x: 0, y: -1}
+      - {x: 1, y: -1}
