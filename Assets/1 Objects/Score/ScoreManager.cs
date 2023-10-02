@@ -9,7 +9,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private EventObjectScriptable onGainScore;
     private int currentScore = 0;
     [SerializeField] private TextMeshProUGUI scoreText;
-
+    [SerializeField] private IntVariable score;
     private void Start()
     {
         onGainScore.AddListener(UpdateScore);
@@ -20,5 +20,6 @@ public class ScoreManager : MonoBehaviour
     {
         currentScore += (int)obj ;
         scoreText.text = currentScore.ToString();
+        score.SetValue(currentScore);
     }
 }
