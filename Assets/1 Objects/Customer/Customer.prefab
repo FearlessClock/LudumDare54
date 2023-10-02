@@ -180,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cedd5244b9a69a4b9bd7a89ad410d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onGainScore: {fileID: 11400000, guid: c499ff41f40b14a499c2d5c3cb0c3c0e, type: 2}
 --- !u!114 &4261959289193389021
 MonoBehaviour:
   m_ObjectHideFlags: 0
