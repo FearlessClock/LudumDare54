@@ -11,7 +11,9 @@ public class EndScreen : MonoBehaviour
     public static EndScreen Instance { get => instance; }
 
     [SerializeField] GameObject screen;
-    [SerializeField] TextMeshProUGUI titleText;
+    [SerializeField] Image background;
+    [SerializeField] Sprite backgroundWin;
+    [SerializeField] Sprite backgroundLoose;
     [SerializeField] TextMeshProUGUI dataText;
 
     private void Awake()
@@ -31,20 +33,20 @@ public class EndScreen : MonoBehaviour
 
         if (isWin)
         {
-            titleText.text = "Victory !!";
+            background.sprite = backgroundWin;
             dataText.text = $"Time : XXXX";
         }
         else
         {
-            titleText.text = "Defeat...";
+            background.sprite = backgroundLoose;
             dataText.text = $"Soul get : XXXX";
         }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W)) CallEndScreen(true);
-        else if (Input.GetKeyDown(KeyCode.L)) CallEndScreen(false);
+        /*if (Input.GetKeyDown(KeyCode.W)) CallEndScreen(true);
+        else if (Input.GetKeyDown(KeyCode.L)) CallEndScreen(false);*/
     }
 
     public void Menu()
