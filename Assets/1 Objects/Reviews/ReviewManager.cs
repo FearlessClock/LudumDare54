@@ -21,6 +21,7 @@ public class ReviewManager : MonoBehaviour
     {
         if (hasLost)
             return;
+        Debug.Log("file complaint recieved");
 
         int i = Random.Range(0, 3);
         lives--;
@@ -30,5 +31,10 @@ public class ReviewManager : MonoBehaviour
             hasLost = true;
         }
         PopUpManager.Instance.SpawnPopup(i);
+    }
+
+    private void OnDestroy()
+    {
+        onFileComplaint.RemoveListener(SendReview);
     }
 }
