@@ -25,7 +25,7 @@ public class CatHandler : Block
     [SerializeField] private CatLayout walkLayout;
     [SerializeField] private CatLayout[] catLayouts;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    private int catIndex = 2;
+    private int catIndex = 0;
 
     private CatState catState = CatState.Sleeping;
     [SerializeField] private float changePositionTime = 10;
@@ -87,6 +87,15 @@ public class CatHandler : Block
         UpdateCatLayout();
     }
 
+    private void SetToRandomSleepLayout()
+    {
+        int i = UnityEngine.Random.Range(0, catLayouts.Length);
+        if (i == catIndex)
+            i = UnityEngine.Random.Range(0, catLayouts.Length);
+        catIndex = i;
+        SetToSleepLayout(i);
+    }
+
     private void SetLayoutVisual(CatLayout newLayout)
     {
         EmptyOldPositions(GridManager.Instance.CellSize);
@@ -127,40 +136,33 @@ public class CatHandler : Block
         switch (catState)
         {
             case CatState.Sleeping:
-                if (UnityEngine.Random.Range(0f, 1f) > .0f)
                 {
-                    Debug.Log("-----Move CAT------");
-                    catState = CatState.Moving;
-                    SetToWalkLayout();
-                    StartCoroutine(GetCatPath());
+                    if (UnityEngine.Random.Range(0f, 1f) > .75f)
+                    {
+                        catState = CatState.Moving;
+                        SetToWalkLayout();
+                        StartCoroutine(GetCatPath());
+                    }
+                    else
+                        SetToRandomSleepLayout();
+
+                    timer = changePositionTime;
+                    break;
                 }
-                else
-                {
-                    Debug.Log("-----Update CAT------");
-                    UpdateCatLayout();
-                }
-                timer = changePositionTime;
-                break;
             
             case CatState.Moving:
-                catState = CatState.Sleeping;
-
-                int i = UnityEngine.Random.Range(0, catLayouts.Length);
-                if (i == catIndex)
-                    i = UnityEngine.Random.Range(0, catLayouts.Length);
-                catIndex = i;
-
-                Debug.Log("-----Sleeping CAT------");
-                SetToSleepLayout(i);
-                timer = changePositionTime + UnityEngine.Random.Range(-2f, 2f);
-                break;
+                {
+                    catState = CatState.Sleeping;
+                    SetToRandomSleepLayout();
+                    timer = changePositionTime + UnityEngine.Random.Range(-2f, 2f);
+                    break;
+                }
         }
     }
 
     private IEnumerator GetCatPath()
     {
         pathStep = 0;
-        Debug.Log("try get pos");
         bool res = false;
         Vector2 targetPos = Vector2.zero;
         int counter = 100;
@@ -178,7 +180,7 @@ public class CatHandler : Block
         IsLookingForPath = false;
         if (!res || path != null && path.Length == 0)
         {
-            Debug.Log("Empty path");
+            Debug.Log("Empty cat path");
             catState = CatState.Sleeping;
         }
     }
