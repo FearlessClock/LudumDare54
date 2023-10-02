@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class EndScreen : MonoBehaviour
 {
@@ -11,8 +12,11 @@ public class EndScreen : MonoBehaviour
     public static EndScreen Instance { get => instance; }
 
     [SerializeField] GameObject screen;
-    [SerializeField] TextMeshProUGUI titleText;
+    [SerializeField] Image background;
+    [SerializeField] Sprite backgroundWin;
+    [SerializeField] Sprite backgroundLoose;
     [SerializeField] TextMeshProUGUI dataText;
+    private float secondTimer;
 
     private void Awake()
     {
@@ -24,6 +28,7 @@ public class EndScreen : MonoBehaviour
 
         instance = this;
     }
+    
 
     public void CallEndScreen(bool isWin)
     {
@@ -31,12 +36,12 @@ public class EndScreen : MonoBehaviour
 
         if (isWin)
         {
-            titleText.text = "Victory !!";
-            dataText.text = $"Time : XXXX";
+            background.sprite = backgroundWin;
+            dataText.text = $"Time : {(int)secondTimer / 60}mn {(int)secondTimer % 60}sec";
         }
         else
         {
-            titleText.text = "Defeat...";
+            background.sprite = backgroundLoose;
             dataText.text = $"Soul get : XXXX";
         }
     }
@@ -45,6 +50,7 @@ public class EndScreen : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W)) CallEndScreen(true);
         else if (Input.GetKeyDown(KeyCode.L)) CallEndScreen(false);
+        secondTimer += Time.deltaTime;
     }
 
     public void Menu()
