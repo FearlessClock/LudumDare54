@@ -75,7 +75,7 @@ public class Block : MonoBehaviour
         transform.position = pos;
     }
 
-    private void ComputeBlockLayout()
+    protected void ComputeBlockLayout()
     {
         Vector2 offset;
         Vector2 botLeft = Vector2.zero;
@@ -122,7 +122,6 @@ public class Block : MonoBehaviour
 
     protected void EmptyOldPositions(float cellSize)
     {
-
         Vector3 offset;
         if (wasPlacedOnce) // Only if Item was Blocking Grid cells
         {
@@ -137,7 +136,6 @@ public class Block : MonoBehaviour
 
     protected void UpdateNewPositions(float cellSize, Vector3 newPos)
     {
-
         Vector3 offset;
         for (int i = 0; i < blockLayoutOffset.Count; ++i)
         {

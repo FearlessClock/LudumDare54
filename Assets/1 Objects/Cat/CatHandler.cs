@@ -3,6 +3,7 @@ using DG.Tweening;
 using Grid;
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CatHandler : Block
@@ -21,6 +22,7 @@ public class CatHandler : Block
         Moving
     }
 
+    [SerializeField] private CatLayout walkLayout;
     [SerializeField] private CatLayout[] catLayouts;
     [SerializeField] private SpriteRenderer spriteRenderer;
     private int catIndex = 2;
@@ -38,26 +40,18 @@ public class CatHandler : Block
     private void Start()
     {
         aStar = new AStar();
+
+        if (!walkLayout.layouts.Contains(Vector3.zero))
+            walkLayout.layouts.AddCenterBlock();
+
         for (int i = 0; i < catLayouts.Length; i++)
         {
            if (!catLayouts[i].layouts.Contains(Vector3.zero))
                 catLayouts[i].layouts.AddCenterBlock();
         }
-        UpdateCatLayout();
-        timer = changePositionTime + UnityEngine.Random.Range(-2f, 2f);
-    }
 
-    private void UpdateCatLayout()
-    {
-        float cellSize = GridManager.Instance.CellSize;
-        EmptyOldPositions(cellSize);
-        spriteRenderer.sprite = catLayouts[catIndex].sprite;
-        spriteRenderer.transform.localPosition = catLayouts[catIndex].spriteOffset;
-        blockLayoutOffset = catLayouts[catIndex].layouts.Positions;
-        Init();
-        UpdateNewPositions(cellSize, transform.position);
-        lastPosition = transform.position;
-        wasPlacedOnce = true;
+        SetToSleepLayout(catIndex);
+        timer = changePositionTime + UnityEngine.Random.Range(-2f, 2f);
     }
 
     private void Update()
@@ -81,6 +75,42 @@ public class CatHandler : Block
         }
     }
 
+    private void SetToWalkLayout()
+    {
+        SetLayoutVisual(walkLayout);
+        UpdateCatLayout();
+    }
+
+    private void SetToSleepLayout(int index)
+    {
+        SetLayoutVisual(catLayouts[index]);
+        UpdateCatLayout();
+    }
+
+    private void SetLayoutVisual(CatLayout newLayout)
+    {
+        EmptyOldPositions(GridManager.Instance.CellSize);
+        spriteRenderer.sprite = newLayout.sprite;
+        spriteRenderer.transform.localPosition = newLayout.spriteOffset;
+
+        blockLayoutOffset = newLayout.layouts.Positions;
+        ComputeBlockLayout();
+    }
+
+    private void UpdateCatLayout()
+    {
+        float cellSize = GridManager.Instance.CellSize;
+
+        EmptyOldPositions(cellSize);
+        UpdateNewPositions(cellSize, transform.position);
+
+        lastPosition = transform.position;
+
+        if (wasPlacedOnce)
+            return;
+        wasPlacedOnce = true;
+    }
+
     private void MovementDone()
     {
         UpdateCatLayout();
@@ -99,24 +129,29 @@ public class CatHandler : Block
             case CatState.Sleeping:
                 if (UnityEngine.Random.Range(0f, 1f) > .0f)
                 {
+                    Debug.Log("-----Move CAT------");
                     catState = CatState.Moving;
+                    SetToWalkLayout();
                     StartCoroutine(GetCatPath());
                 }
                 else
                 {
-                    int i = UnityEngine.Random.Range(0, catLayouts.Length);
-                    if (i == catIndex)
-                        i = UnityEngine.Random.Range(0, catLayouts.Length);
-
-                    catIndex = i;
+                    Debug.Log("-----Update CAT------");
                     UpdateCatLayout();
-
                 }
                 timer = changePositionTime;
                 break;
             
             case CatState.Moving:
                 catState = CatState.Sleeping;
+
+                int i = UnityEngine.Random.Range(0, catLayouts.Length);
+                if (i == catIndex)
+                    i = UnityEngine.Random.Range(0, catLayouts.Length);
+                catIndex = i;
+
+                Debug.Log("-----Sleeping CAT------");
+                SetToSleepLayout(i);
                 timer = changePositionTime + UnityEngine.Random.Range(-2f, 2f);
                 break;
         }
