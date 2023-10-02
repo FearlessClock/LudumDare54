@@ -27,6 +27,7 @@ namespace Grid
 
         public Action OnGridUpdated = null;
 
+        public bool isActive = false;
         public float CellSize { get => size; }
 
         private void Awake()
@@ -42,6 +43,7 @@ namespace Grid
             }
 
             InitializeGrid();
+            isActive = true;
         }
 
         private void Start()

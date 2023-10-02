@@ -38,11 +38,14 @@ public class EndScreen : MonoBehaviour
 
         if (isWin)
         {
+            SoundTransmitter.Instance.Play("Victory");
+
             background.sprite = backgroundWin;
             dataText.text = $"Time : {(int)secondTimer / 60}min {(int)secondTimer % 60}sec";
         }
         else
         {
+            SoundTransmitter.Instance.Play("Defeat");
             background.sprite = backgroundLoose;
             dataText.text = $"Soul won : " + score.value;
         }

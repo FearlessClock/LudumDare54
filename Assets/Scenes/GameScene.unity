@@ -233,6 +233,7 @@ MonoBehaviour:
   width: 16
   height: 16
   size: 1
+  isActive: 0
 --- !u!4 &37622391
 Transform:
   m_ObjectHideFlags: 0
@@ -8479,6 +8480,22 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 6598d280954745c44b139aa3966c5492, type: 3}
     audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
     volume: 0.2
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: Victory
+    clip: {fileID: 8300000, guid: 33ca35c2b11b89642ba0a6b9d1b9acdc, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: Defeat
+    clip: {fileID: 8300000, guid: 6d27199719578f84799502761a3786ab, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.5
     pitch: 1
     playOnAwake: 0
     loop: 0
