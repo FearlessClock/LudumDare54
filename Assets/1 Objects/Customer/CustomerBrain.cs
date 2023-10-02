@@ -297,7 +297,7 @@ public class FileComplaintAction : CustomerAction
     {
         customerBuyItemHandler.ReturnItems();
         onFileComplaint.Call();
-
+        Debug.Log("file complaint");
         yield return null;
     }
 }
