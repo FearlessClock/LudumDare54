@@ -23,6 +23,8 @@ namespace Grid
 
         [SerializeField] private float size = 1;
         private Vector3 offset;
+        private List<GridInformation> availableCells = new List<GridInformation>();
+
         public Action OnGridUpdated = null;
 
         public float CellSize { get => size; }
@@ -39,19 +41,11 @@ namespace Grid
                 return;
             }
 
-            grid = new GridInformation[height, width];
-            spriteGrid = new SpriteRenderer[height, width];
-            offset.x = transform.position.x - size * width /2;
-            offset.y = transform.position.y - size * height / 2;
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    grid[y, x] = new GridInformation(GridType.Empty,(new Vector3(x,y) + offset), new Vector2Int(x,y), false);
-                    spriteGrid[y, x] = Instantiate(gridSpritePrefab, new Vector3(x, y) + offset, Quaternion.identity, this.transform);
-                    spriteGrid[y, x].sprite = gridImages[(x +y) % 2];
-                }
-            }
+            InitializeGrid();
+        }
+
+        private void Start()
+        {
             OnGridUpdated?.Invoke();
         }
 
@@ -113,9 +107,10 @@ namespace Grid
             return GetAtPosTruncate(localPos);
         }
 
-        public Vector2 GetRandomCellPosition()
+        public Vector2 GetRandomAvailablePosition()
         {
-            return GetAtPos(Random.Range(2, width - 1), Random.Range(2, height - 1)).worldPosition;
+            var cell = availableCells[Random.Range(0, availableCells.Count)];
+            return cell.worldPosition;
         }
 
         public Vector2 WorldToLocal(Vector3 worldPosition)
@@ -128,23 +123,52 @@ namespace Grid
             return new Vector3(worldPosition.x, worldPosition.y) - this.transform.position - offset;
         }
 
-        public void SetBlockedState(Vector3 worldPos, bool isBlockedState)
+        public void SetBlockedState(Vector3 worldPos, bool isBlockedState, GridInformation info = null)
         {
-            GetAtWorldLocation(worldPos).isBlocked = isBlockedState;
-            OnGridUpdated?.Invoke();
+            if (info == null)
+                info = GetAtWorldLocation(worldPos);
+
+            info.isBlocked = isBlockedState;
+
+            UpdateAvailableGridInfo(info);
         }
 
         public void UpdateGridAtWorldPosition(Vector3 worldPos, GridType type)
         {
             var cellInfo = GetAtWorldLocation(worldPos);
             cellInfo.type = type;
-            cellInfo.isBlocked = type switch
+            SetBlockedState(worldPos, type == GridType.Item, cellInfo);
+        }
+
+        private void InitializeGrid()
+        {
+            grid = new GridInformation[height, width];
+            spriteGrid = new SpriteRenderer[height, width];
+            offset.x = transform.position.x - size * width / 2;
+            offset.y = transform.position.y - size * height / 2;
+            GridInformation info;
+            for (int y = 0; y < height; y++)
             {
-                GridType.Empty => false,
-                GridType.Item => true,
-                GridType.Character => false,
-                _ => false
-            };
+                for (int x = 0; x < width; x++)
+                {
+                    info = new GridInformation(GridType.Empty, (new Vector3(x, y) + offset), new Vector2Int(x, y), false);
+                    grid[y, x] = info;
+                    availableCells.Add(info);
+                    spriteGrid[y, x] = Instantiate(gridSpritePrefab, new Vector3(x, y) + offset, Quaternion.identity, this.transform);
+                    spriteGrid[y, x].sprite = gridImages[(x + y) % 2];
+                }
+            }
+        }
+
+        private void UpdateAvailableGridInfo(GridInformation info)
+        {
+            bool inAvailableList = availableCells.Find(i => info.index == i.index) != null;
+
+            if (info.isBlocked && inAvailableList)
+                availableCells.Remove(info);
+            else if (!info.isBlocked && !inAvailableList)
+                availableCells.Add(info);
+
             OnGridUpdated?.Invoke();
         }
 
@@ -175,10 +199,13 @@ namespace Grid
             }
         }
     }
-     
+
+    [Serializable]
     public class GridInformation
     {
+        [Serializable]
         public enum GridType { Empty, Item, Character}
+        
         public GridType type;
         public Vector2 worldPosition;
         public Vector2Int index;
@@ -191,7 +218,5 @@ namespace Grid
             this.index = index;
             this.isBlocked = isBlocked;
         }
-
-
     }
 }
