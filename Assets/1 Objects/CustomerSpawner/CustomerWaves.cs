@@ -6,7 +6,11 @@ using UnityEngine;
 public class CustomerWaves : MonoBehaviour
 {
     [Header("Spawn")]
+    [SerializeField] float timeBeforeSpawn;
     [SerializeField] float timeBtwSpawn;
+    [SerializeField] float miniTimeBtwSpawn;
+    [SerializeField] float multiplier;
+    float modifiedTimeBtwSpawn;
     float currentTimeBtwSpawn;
     [SerializeField] int maxNumberOfItem;
 
@@ -14,13 +18,16 @@ public class CustomerWaves : MonoBehaviour
 
     private void Awake()
     {
-        currentTimeBtwSpawn = 3;
+        currentTimeBtwSpawn = timeBeforeSpawn;
+        modifiedTimeBtwSpawn = timeBtwSpawn;
     }
     private void Update()
     {
         if(currentTimeBtwSpawn < 0)
         {
-            currentTimeBtwSpawn = timeBtwSpawn;
+            modifiedTimeBtwSpawn *= multiplier;
+            modifiedTimeBtwSpawn = Mathf.Clamp(modifiedTimeBtwSpawn, miniTimeBtwSpawn, timeBtwSpawn);
+            currentTimeBtwSpawn = modifiedTimeBtwSpawn;
             SpawnCustomer();
 
         }else currentTimeBtwSpawn -= Time.deltaTime;

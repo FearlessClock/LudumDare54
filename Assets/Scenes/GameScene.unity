@@ -8223,7 +8223,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c601bfe7d959db428a5f928c8947c65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBtwSpawn: 20
+  timeBeforeSpawn: 3
+  timeBtwSpawn: 10
+  miniTimeBtwSpawn: 5
+  multiplier: 0.975
   maxNumberOfItem: 3
   cs: {fileID: 1773893470}
 --- !u!114 &1773893472
