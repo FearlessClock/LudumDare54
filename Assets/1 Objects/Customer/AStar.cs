@@ -13,6 +13,9 @@ namespace AStarStuff
         private List<Node> close = null;
 
         private Node[,] grid = null;
+        Node[] neighbors = null;
+        Node openNode = null;
+        Node closeNode = null;
 
         public AStar() 
         {
@@ -38,7 +41,6 @@ namespace AStarStuff
             close.Clear();
 
             open.Add(grid[startIndex.y, startIndex.x]);
-
             Node currentNode;
             int loopCounter = 10000;
             while (open.Count > 0)
@@ -57,7 +59,7 @@ namespace AStarStuff
                 }
 
 
-                Node[] neighbors = FindNeighbors(currentNode);
+                neighbors = FindNeighbors(currentNode);
 
                 for (int i = 0; i < neighbors.Length; i++)
                 {
@@ -65,12 +67,12 @@ namespace AStarStuff
                     neighbors[i].h = ManhattenDistance(neighbors[i].position, GridManager.Instance.WorldToLocal(centerPointWorld));
                     neighbors[i].f = neighbors[i].g + neighbors[i].h;
 
-                    Node openNode = OpenContains(neighbors[i]);
+                    openNode = OpenContains(neighbors[i]);
                     if (openNode != null &&  openNode.f > neighbors[i].f)
                     {
                         open.Remove(openNode);
                     }
-                    Node closeNode = CloseContains(neighbors[i]);
+                    closeNode = CloseContains(neighbors[i]);
                     if (closeNode != null && closeNode.f > neighbors[i].f)
                     {
                         close.Remove(closeNode);

@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 3c0efbcfb83443d498bbf0cb442daa9a
   - enabled: 1
-    path: Assets/1 Objects/Customer/Wave Testing.unity
+    path: Assets/1 Objects/CustomerSpawner/Wave Testing.unity
     guid: 0a55539be279ee841b2e47aafc9e99ea
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
