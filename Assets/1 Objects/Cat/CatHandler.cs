@@ -83,8 +83,8 @@ public class CatHandler : Block
 
     private void SetToSleepLayout(int index)
     {
-        SetLayoutVisual(catLayouts[index]);
-        UpdateCatLayout();
+        if(SetLayoutVisual(catLayouts[index]))
+            UpdateCatLayout();
     }
 
     private void SetToRandomSleepLayout()
@@ -96,14 +96,22 @@ public class CatHandler : Block
         SetToSleepLayout(i);
     }
 
-    private void SetLayoutVisual(CatLayout newLayout)
+    private bool SetLayoutVisual(CatLayout newLayout)
     {
+        for (int i = 0; i < newLayout.layouts.Positions.Count; i++) 
+        {
+            if (catLayouts[catIndex].layouts.Positions.Contains(newLayout.layouts.Positions[i]))
+                continue;
+            if (GridManager.Instance.GetAtWorldLocation((Vector3)newLayout.layouts.Positions[i] + transform.position).isBlocked)
+                return false;
+        }
         EmptyOldPositions(GridManager.Instance.CellSize);
         spriteRenderer.sprite = newLayout.sprite;
         spriteRenderer.transform.localPosition = newLayout.spriteOffset;
 
         blockLayoutOffset = newLayout.layouts.Positions;
         ComputeBlockLayout();
+        return true;
     }
 
     private void UpdateCatLayout()
@@ -137,7 +145,7 @@ public class CatHandler : Block
         {
             case CatState.Sleeping:
                 {
-                    if (UnityEngine.Random.Range(0f, 1f) > .75f)
+                    if (UnityEngine.Random.Range(0f, 1f) > .3f)
                     {
                         catState = CatState.Moving;
                         SetToWalkLayout();
