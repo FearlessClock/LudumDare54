@@ -21,7 +21,6 @@ public class ReviewManager : MonoBehaviour
     {
         if (hasLost)
             return;
-        Debug.Log("file complaint recieved");
 
         int i = Random.Range(0, 3);
         lives--;
@@ -29,6 +28,7 @@ public class ReviewManager : MonoBehaviour
         {
             Debug.Log("lose");
             hasLost = true;
+            EndScreen.Instance.CallEndScreen(false);
         }
         PopUpManager.Instance.SpawnPopup(i);
     }
