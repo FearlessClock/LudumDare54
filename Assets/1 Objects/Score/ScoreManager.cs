@@ -10,6 +10,7 @@ public class ScoreManager : MonoBehaviour
     private int currentScore = 0;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private IntVariable score;
+    [SerializeField] private int winningScore = 99;
     private void Start()
     {
         onGainScore.AddListener(UpdateScore);
@@ -21,5 +22,9 @@ public class ScoreManager : MonoBehaviour
         currentScore += (int)obj ;
         scoreText.text = currentScore.ToString();
         score.SetValue(currentScore);
+        if(currentScore >= winningScore)
+        {
+            EndScreen.Instance.CallEndScreen(true);
+        }
     }
 }

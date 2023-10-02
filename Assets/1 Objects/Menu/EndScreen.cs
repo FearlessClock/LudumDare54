@@ -17,6 +17,7 @@ public class EndScreen : MonoBehaviour
     [SerializeField] Sprite backgroundLoose;
     [SerializeField] TextMeshProUGUI dataText;
     private float secondTimer;
+    [SerializeField] IntVariable score;
 
     private void Awake()
     {
@@ -32,17 +33,18 @@ public class EndScreen : MonoBehaviour
 
     public void CallEndScreen(bool isWin)
     {
+        Time.timeScale = 0;
         screen.SetActive(true);
 
         if (isWin)
         {
             background.sprite = backgroundWin;
-            dataText.text = $"Time : {(int)secondTimer / 60}mn {(int)secondTimer % 60}sec";
+            dataText.text = $"Time : {(int)secondTimer / 60}min {(int)secondTimer % 60}sec";
         }
         else
         {
             background.sprite = backgroundLoose;
-            dataText.text = $"Soul get : XXXX";
+            dataText.text = $"Soul won : " + score.value;
         }
     }
 
@@ -55,11 +57,15 @@ public class EndScreen : MonoBehaviour
 
     public void Menu()
     {
+        Time.timeScale = 1;
+
         SceneManager.LoadScene(0);
     }
 
     public void Restart()
     {
+        Time.timeScale = 1;
+
         SceneManager.LoadScene(1);
     }
 }

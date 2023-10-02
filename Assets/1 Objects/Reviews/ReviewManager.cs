@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReviewManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class ReviewManager : MonoBehaviour
     [SerializeField] private int lives = 5;
     [SerializeField] private EventScriptable onFileComplaint = null;
     bool hasLost = false;
+    [SerializeField] private Image[] uiStars;
+
     private void Awake()
     {
         Instance = this;
@@ -24,6 +27,7 @@ public class ReviewManager : MonoBehaviour
 
         int i = Random.Range(0, 3);
         lives--;
+        UpdateLifes();
         if (lives <= 0)
         {
             Debug.Log("lose");
@@ -32,6 +36,22 @@ public class ReviewManager : MonoBehaviour
         }
         PopUpManager.Instance.SpawnPopup(i);
     }
+
+    private void UpdateLifes()
+    {
+        for (int i = 0; i < uiStars.Length; i++)
+        {
+            if (i < lives)
+            {
+                uiStars[i].color = Color.white;
+            }
+            else
+            {
+                uiStars[i].color = Color.clear;
+            }
+        }
+    }
+
 
     private void OnDestroy()
     {
