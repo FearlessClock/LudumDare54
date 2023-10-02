@@ -33,8 +33,8 @@ public class CustomerBrain : MonoBehaviour
         actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y +1) }, entrancePosition, movementHandler));
         actions.Enqueue(new WaitAction(1));
 
-        MakeActionSequence(itemsToBuy);
         customerBuyItemHandler.Init(itemsToBuy);
+        MakeActionSequence();
 
         actionRoutine = StartCoroutine(ActionHandleRoutine());
         GridManager.Instance.OnGridUpdated += GridUpdated;
@@ -43,7 +43,13 @@ public class CustomerBrain : MonoBehaviour
 
     private void ActionFailed()
     {
+        Debug.Log(gameObject.name + " action failed");
+
         actionLoopStatus = false;
+        if (actionRoutine != null)
+        {
+            StopCoroutine(actionRoutine);
+        }
         actions.Clear();
         if (!hasRetried)
         {
@@ -58,12 +64,9 @@ public class CustomerBrain : MonoBehaviour
         {
             actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y) }, entrancePosition, movementHandler));
             actions.Enqueue(new FileComplaintAction(onFileComplaint, customerBuyItemHandler));
+            actions.Enqueue(new LeaveStoreAction(this));
 
             hasRetried = true;
-        }
-        if (actionRoutine != null)
-        {
-            StopCoroutine(actionRoutine);
         }
         actionLoopStatus = true;
         actionRoutine = StartCoroutine(ActionHandleRoutine());
@@ -71,22 +74,20 @@ public class CustomerBrain : MonoBehaviour
 
     private void GridUpdated()
     {
-
         actionLoopStatus = false;
-        actions.Clear();
-        MakeActionSequence();
         if (actionRoutine != null)
         {
             StopCoroutine(actionRoutine);
         }
+        actions.Clear();
+        MakeActionSequence();
         actionLoopStatus = true;
         actionRoutine = StartCoroutine(ActionHandleRoutine());
     }
 
-    private void MakeActionSequence(Item[] items = null)
+    private void MakeActionSequence()
     {
-        if(items == null)
-            items = customerBuyItemHandler.GetRemainingItems;
+        Item[] items = customerBuyItemHandler.GetRemainingItems;
 
         for (int i = 0; i < items.Length; i++)
         {
