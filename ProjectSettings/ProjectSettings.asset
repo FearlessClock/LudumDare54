@@ -40,11 +40,11 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos: []
-  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: 8a9b7f17687f3274390d5cc816f0aa47, type: 3}
+  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: 39b6afc6781da9b4ca2fd879d3e919dd, type: 3}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1920
   defaultScreenHeight: 1080
-  defaultScreenWidthWeb: 800
+  defaultScreenWidthWeb: 900
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 1
@@ -281,7 +281,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: c44cc92ecbac6a54bbf826949e525a6b, type: 3}
+      m_Icon: {fileID: 2800000, guid: 39b6afc6781da9b4ca2fd879d3e919dd, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

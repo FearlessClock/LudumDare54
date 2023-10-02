@@ -126,6 +126,8 @@ public class Item : Block
         transform.position = newPos;
 
         Shipment.Instance.AddToAvailableTargets(this);
+        
+        SoundTransmitter.Instance.Play("PlaceItem");
 
         if (!wasPlacedOnce) wasPlacedOnce = true;
     }

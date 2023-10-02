@@ -8428,19 +8428,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: Music
-    clip: {fileID: 8300000, guid: 92b9fd90442500045b03822e6fee5005, type: 3}
+    clip: {fileID: 8300000, guid: a0125493cbc3da047aa3b373a626f8b9, type: 3}
     audioMixerGroup: {fileID: 3148045253597596114, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
     volume: 0.1
     pitch: 1
     playOnAwake: 1
     loop: 1
     source: {fileID: 0}
-  - name: SFX1
-    clip: {fileID: 8300000, guid: 6de65ecc4d2b8eb4dbc0e60c19e24f6e, type: 3}
+  - name: CustomerEnter
+    clip: {fileID: 8300000, guid: fda3284030238f549a36593b22d0522b, type: 3}
     audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
     volume: 0.5
     pitch: 1
-    playOnAwake: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: BuyItem
+    clip: {fileID: 8300000, guid: e560a5b02aaf51c49af1b7c026cfd26b, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: FileComplaint
+    clip: {fileID: 8300000, guid: 2c0da29dc276c8a4d807c2f1fe616e21, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: Review
+    clip: {fileID: 8300000, guid: 14702741e0738bc4aa0c19d3efba8248, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.2
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: NewItem
+    clip: {fileID: 8300000, guid: 4c3eedd8a352b8c498e6a84a59c67f0e, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.2
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: PlaceItem
+    clip: {fileID: 8300000, guid: 6598d280954745c44b139aa3966c5492, type: 3}
+    audioMixerGroup: {fileID: 1041650003820700707, guid: 5e4f05c264e2a1b4f9d982202664757a, type: 2}
+    volume: 0.2
+    pitch: 1
+    playOnAwake: 0
     loop: 0
     source: {fileID: 0}
 --- !u!4 &1907558696

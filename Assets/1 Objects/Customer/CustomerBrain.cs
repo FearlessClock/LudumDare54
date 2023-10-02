@@ -26,12 +26,14 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 entrancePosition;
 
     public bool canLeave = false;
+
+
     public void Init(Item[] itemsToBuy, Vector2 exitPosition)
     {
+        SoundTransmitter.Instance.Play("CustomerEnter");
         this.exitPosition = exitPosition;
         this.entrancePosition = this.transform.position;
-        actions.Enqueue(new WalkAction(new Vector2[1] { new Vector2Int((int)entrancePosition.x, (int)entrancePosition.y +1) }, entrancePosition, movementHandler));
-        actions.Enqueue(new WaitAction(1));
+        actions.Enqueue(new WaitAction(.5f));
 
         customerBuyItemHandler.Init(itemsToBuy);
         MakeActionSequence();
@@ -43,8 +45,6 @@ public class CustomerBrain : MonoBehaviour
 
     private void ActionFailed()
     {
-        Debug.Log(gameObject.name + " action failed");
-
         actionLoopStatus = false;
         if (actionRoutine != null)
         {
@@ -185,11 +185,15 @@ public class WalkAction : CustomerAction
     private void OnMovementFailed()
     {
         failedAction?.Invoke();
+        movement.OnArriveAtSpot -= OnDoneMoving;
+        movement.OnMovementFailed -= OnMovementFailed;
     }
 
     private void OnDoneMoving()
     {
         hasFinishedMoving = true;
+        movement.OnArriveAtSpot -= OnDoneMoving;
+        movement.OnMovementFailed -= OnMovementFailed;
     }
 
 }
@@ -242,6 +246,7 @@ public class BuyAction : CustomerAction
     public IEnumerator DoAction()
     {
         customerBuyItemHandler.ClaimItem(itemToBuy);
+        SoundTransmitter.Instance.Play("BuyItem");
         yield return null;
     }
 }
@@ -268,6 +273,8 @@ public class ComplainAction : CustomerAction
 
     public IEnumerator DoAction()
     {
+        SoundTransmitter.Instance.Play("FileComplaint");
+
         customerComplainHandler.Complain();
         yield return new WaitForSeconds(waitTime);
 
@@ -321,7 +328,6 @@ public class LeaveStoreAction : CustomerAction
 
     public IEnumerator DoAction()
     {
-            Debug.Log("done action");
         customerBrain.canLeave = true;
         yield return null;
     }

@@ -76,6 +76,8 @@ public class Shipment : MonoBehaviour
 
     private void SpawnItemInStorage()
     {
+        SoundTransmitter.Instance.Play("NewItem");
+
         var spawnPos = transform.position + new Vector3(Random.Range(-storageAreaSize.x, storageAreaSize.x), Random.Range(-storageAreaSize.y, storageAreaSize.y), 0) / 2f;
         
         var item = GetRandomItem();

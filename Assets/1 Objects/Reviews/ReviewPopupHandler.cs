@@ -12,6 +12,8 @@ public class ReviewPopupHandler : MonoBehaviour
 
     public void Init(Review review)
     {
+
+        SoundTransmitter.Instance.Play("Review");
         title.text = review.title;
         description.text = review.description;
         for (int i = 0; i < stars.Length; i++)

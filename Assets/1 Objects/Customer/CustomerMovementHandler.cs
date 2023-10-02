@@ -103,7 +103,7 @@ public class CustomerMovementHandler : MonoBehaviour
         {
             pathStep = 0;
             hasPath = false;
-            OnArriveAtSpot.Invoke();
+            OnArriveAtSpot?.Invoke();
         }
     }
 }
