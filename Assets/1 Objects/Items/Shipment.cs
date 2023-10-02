@@ -59,7 +59,7 @@ public class Shipment : MonoBehaviour
         {
             var item = GetRandomItem();
             Debug.Log("Spawned " + item.name);
-            var spawnPos = GridManager.Instance.GetRandomCellPosition();
+            var spawnPos = GridManager.Instance.GetRandomAvailablePosition();
             item.MoveTo(spawnPos);
 
             item.gameObject.SetActive(true);

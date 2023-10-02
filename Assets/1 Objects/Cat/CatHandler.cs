@@ -169,7 +169,7 @@ public class CatHandler : Block
         IsLookingForPath = true;
         do
         {
-            targetPos = GridManager.Instance.GetRandomCellPosition();
+            targetPos = GridManager.Instance.GetRandomAvailablePosition();
             if (GridManager.Instance.GetAtWorldLocation(targetPos).isBlocked)
                 break;
             counter--;
