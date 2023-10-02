@@ -58,6 +58,19 @@ public class CustomerMovementHandler : MonoBehaviour
 
     private void OnGridUpdate()
     {
+        bool isBlocked = false;
+        for (int i = 0; i < path.Length; i++)
+        {
+            if (GridManager.Instance.GetAtWorldLocation(path[i]).isBlocked)
+            {
+                isBlocked = true;
+                break;
+            }
+        }
+
+        if (!isBlocked)
+            return;
+
         bool res = false;
         path = aStarerer.GetPathTo(GridManager.Instance.GetAtWorldLocation(this.transform.position).index, targets, centerTarget, out res);
         if (!res)

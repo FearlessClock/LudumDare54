@@ -26,7 +26,7 @@ public class CustomerBrain : MonoBehaviour
     private Vector2 entrancePosition;
 
     public bool canLeave = false;
-
+    private ActionType currentAction;
 
     public void Init(Item[] itemsToBuy, Vector2 exitPosition)
     {
@@ -39,7 +39,7 @@ public class CustomerBrain : MonoBehaviour
         MakeActionSequence();
 
         actionRoutine = StartCoroutine(ActionHandleRoutine());
-        GridManager.Instance.OnGridUpdated += GridUpdated;
+        //GridManager.Instance.OnGridUpdated += GridUpdated;
         canLeave = false;
     }
 
@@ -74,6 +74,8 @@ public class CustomerBrain : MonoBehaviour
 
     private void GridUpdated()
     {
+        if (currentAction != ActionType.Walk)
+            return;
         actionLoopStatus = false;
         if (actionRoutine != null)
         {
@@ -105,6 +107,7 @@ public class CustomerBrain : MonoBehaviour
         while(actions.Count > 0)
         {
             CustomerAction action = actions.Dequeue();
+            currentAction = action.Type;
             action.OnActionFailed += ActionFailed;
             yield return action.DoAction();
             action.OnActionFailed -= ActionFailed;
@@ -132,7 +135,7 @@ public class CustomerBrain : MonoBehaviour
 
     private void OnDisable()
     {
-        GridManager.Instance.OnGridUpdated -= GridUpdated;
+        //GridManager.Instance.OnGridUpdated -= GridUpdated;
 
     }
 
@@ -263,7 +266,7 @@ public class ComplainAction : CustomerAction
         this.customerComplainHandler = customerComplainHandler;
     }
 
-    public ActionType Type => ActionType.Buy;
+    public ActionType Type => ActionType.Wait;
 
     public Action OnActionFailed
     {
@@ -293,7 +296,7 @@ public class FileComplaintAction : CustomerAction
         this.customerBuyItemHandler = customerBuyItemHandler;
     }
 
-    public ActionType Type => ActionType.Buy;
+    public ActionType Type => ActionType.Wait;
 
     public Action OnActionFailed
     {
@@ -318,7 +321,7 @@ public class LeaveStoreAction : CustomerAction
         customerBrain = brain;
     }
 
-    public ActionType Type => ActionType.Buy;
+    public ActionType Type => ActionType.Wait;
 
     public Action OnActionFailed
     {
